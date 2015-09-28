@@ -1,0 +1,1530 @@
+(* Content-type: application/vnd.wolfram.mathematica *)
+
+(*** Wolfram Notebook File ***)
+(* http://www.wolfram.com/nb *)
+
+(* CreatedBy='Mathematica 9.0' *)
+
+(*CacheID: 234*)
+(* Internal cache information:
+NotebookFileLineBreakTest
+NotebookFileLineBreakTest
+NotebookDataPosition[       157,          7]
+NotebookDataLength[     56420,       1521]
+NotebookOptionsPosition[     56135,       1507]
+NotebookOutlinePosition[     56477,       1522]
+CellTagsIndexPosition[     56434,       1519]
+WindowFrame->Normal*)
+
+(* Beginning of Notebook Content *)
+Notebook[{
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"(*", 
+   RowBox[{
+    RowBox[{
+     RowBox[{"BeginPackage", "[", "\"\<FullHamiltonian`\>\"", "]"}], 
+     "\[IndentingNewLine]", "\n", 
+     RowBox[{"BaseMatrix", "::", "usage"}]}], "=", 
+    RowBox[{
+    "\"\<MainFunction[x] returns the Hamiltonian, only missing the main \
+diagonal energy, which is parametrized by kz.\>\"", "\n", 
+     "\[IndentingNewLine]", 
+     RowBox[{"Begin", "[", "\"\<Private`\>\"", "]"}]}]}], "\n", "*)"}], 
+  "\[IndentingNewLine]", 
+  RowBox[{
+   RowBox[{
+    RowBox[{
+     RowBox[{"BaseMatrix", "[", 
+      RowBox[{
+      "MM_", ",", "NN_", ",", "\[Epsilon]1_", ",", "\[Epsilon]2_", ",", "H_", 
+       ",", "a_", ",", "\[Lambda]_", ",", "t1_", ",", "t2_"}], " ", "]"}], ":=", 
+     RowBox[{"Module", "[", "\[IndentingNewLine]", 
+      RowBox[{
+       RowBox[{"{", 
+        RowBox[{
+        "m", ",", "m1", ",", "m2", ",", "m3", ",", "m4", ",", "m5", ",", "m6",
+          ",", "m7", ",", "m8", ",", "m9", ",", "newm", 
+         StyleBox[",",
+          FontWeight->"Bold"], 
+         StyleBox["Ry",
+          FontWeight->"Bold"], 
+         StyleBox[",",
+          FontWeight->"Bold"], 
+         StyleBox["\[Alpha]",
+          FontWeight->"Bold"], 
+         StyleBox[",",
+          FontWeight->"Bold"], "chargeVec", ",", "chargeVector", ",", 
+         "potential", ",", "exteriorPoints", ",", "totalCharge", ",", 
+         StyleBox["halfSpaceVoltage",
+          FontWeight->"Bold"], 
+         StyleBox[",",
+          FontWeight->"Bold"], 
+         StyleBox["halfSpaceList",
+          FontWeight->"Bold"], 
+         StyleBox[",",
+          FontWeight->"Bold"], "voltageMatrix", ",", 
+         StyleBox["tempTotal",
+          FontWeight->"Bold"], 
+         StyleBox[",",
+          FontWeight->"Bold"], 
+         StyleBox["tx",
+          FontWeight->"Bold"], 
+         StyleBox[",",
+          FontWeight->"Bold"], "ty", ",", "nn", ",", "mm"}], "}"}], ",", 
+       StyleBox["\[IndentingNewLine]",
+        FontWeight->"Bold"], 
+       RowBox[{
+        RowBox[{
+         StyleBox["\[Alpha]",
+          FontWeight->"Bold"], 
+         StyleBox["=",
+          FontWeight->"Bold"], 
+         FractionBox[".529", "a"]}], ";", 
+        RowBox[{"(*", 
+         RowBox[{
+          FractionBox[
+           SubscriptBox["a", "0"], "a"], ",", " ", 
+          RowBox[{"where", " ", 
+           SubscriptBox["a", "0"], " ", "is", " ", "the", " ", "Bohr", " ", 
+           "radius"}]}], "*)"}], "\[IndentingNewLine]", 
+        RowBox[{"Ry", "=", "13.60569253"}], ";", 
+        RowBox[{"(*", 
+         RowBox[{
+          RowBox[{"Rydberg", " ", "unit", " ", "of", " ", "energy"}], ",", 
+          " ", 
+          RowBox[{"in", " ", "eV"}]}], "*)"}], 
+        StyleBox["\[IndentingNewLine]",
+         FontWeight->"Bold"], 
+        RowBox[{"mm", "=", 
+         RowBox[{"Floor", "[", 
+          FractionBox[
+           RowBox[{"MM", "+", "1"}], "2"], "]"}]}], ";", 
+        RowBox[{"(*", 
+         RowBox[{"along", " ", "top", " ", "of", " ", "half", " ", "space"}], 
+         "*)"}], "\[IndentingNewLine]", 
+        RowBox[{"nn", "=", "NN"}], ";", "\[IndentingNewLine]", 
+        StyleBox["\[IndentingNewLine]",
+         FontWeight->"Bold"], 
+        StyleBox[
+         RowBox[{"(*", 
+          RowBox[{
+           RowBox[{
+           "Poisson", " ", "solver", " ", "that", " ", "implements", " ", 
+            "the", " ", "first", " ", "part", " ", "of", " ", "the", " ", 
+            "algorithm", " ", "described", " ", "below"}], " ", "-", " ", 
+           RowBox[{
+           "it", " ", "represents", " ", "the", " ", "Laplacian", " ", "as", 
+            " ", "a", " ", "matrix", " ", "operator", " ", "then", " ", 
+            "inverts", " ", 
+            RowBox[{"it", ".", " ", "Any"}], " ", "solution", " ", "to", " ", 
+            RowBox[{"Poisson", "'"}], "s", " ", "equation", " ", "is", " ", 
+            "now", " ", "found", " ", "by", " ", "multiplying", " ", "the", 
+            " ", "inverse", " ", "matrix", " ", "by", " ", "the", " ", 
+            "charge", " ", "distribution"}]}], "*)"}],
+         FontWeight->"Bold"], 
+        StyleBox["\[IndentingNewLine]",
+         FontWeight->"Bold"], 
+        StyleBox[
+         RowBox[{"(*", 
+          RowBox[{
+          "This", " ", "is", " ", "a", " ", "symmetric", " ", "finite", " ", 
+           "difference", " ", "method", " ", "to", " ", "solve", " ", "the", 
+           " ", "Poisson", " ", "Equation"}], "*)"}],
+         FontWeight->"Bold"], 
+        StyleBox[" ",
+         FontWeight->"Bold"], 
+        StyleBox["\[IndentingNewLine]",
+         FontWeight->"Bold"], 
+        StyleBox[
+         RowBox[{"(*", 
+          RowBox[{
+           RowBox[{
+            RowBox[{
+             RowBox[{"en", ".", "wikipedia", ".", "org"}], "/", "wiki"}], "/",
+             "Discrete_Poisson"}], "_equation"}], "*)"}],
+         FontWeight->"Bold"], 
+        StyleBox["\[IndentingNewLine]",
+         FontWeight->"Bold"], 
+        StyleBox[
+         RowBox[{"(*", 
+          RowBox[{
+           RowBox[{"construct", " ", "D"}], ",", " ", 
+           RowBox[{
+           "the", " ", "matrix", " ", "operator", " ", "that", " ", 
+            "corresponds", " ", "to", " ", "the", " ", 
+            RowBox[{"Laplacian", ".", " ", "This"}], " ", "is", " ", "a", " ",
+             "9", " ", "point", " ", "stencil"}]}], "*)"}],
+         FontWeight->"Bold"], 
+        StyleBox["\[IndentingNewLine]",
+         FontWeight->"Bold"], 
+        StyleBox[
+         RowBox[{
+          RowBox[{"periodicblock", "[", 
+           RowBox[{"b_", ",", "c_"}], "]"}], ":=", 
+          RowBox[{
+           RowBox[{"c", " ", 
+            RowBox[{"IdentityMatrix", "[", 
+             RowBox[{"MM", "-", "1"}], "]"}]}], "+", 
+           RowBox[{"DiagonalMatrix", "[", 
+            RowBox[{
+             RowBox[{"Table", "[", 
+              RowBox[{"b", ",", 
+               RowBox[{"{", 
+                RowBox[{"i", ",", "0", ",", 
+                 RowBox[{"MM", "-", "3"}]}], "}"}]}], "]"}], ",", "1"}], 
+            "]"}], "+", 
+           RowBox[{"DiagonalMatrix", "[", 
+            RowBox[{
+             RowBox[{"Table", "[", 
+              RowBox[{"b", ",", 
+               RowBox[{"{", 
+                RowBox[{"i", ",", "0", ",", 
+                 RowBox[{"MM", "-", "3"}]}], "}"}]}], "]"}], ",", 
+             RowBox[{"-", "1"}]}], "]"}], "+", 
+           RowBox[{"DiagonalMatrix", "[", 
+            RowBox[{
+             RowBox[{"{", "b", "}"}], ",", 
+             RowBox[{
+              RowBox[{"-", "MM"}], "+", "2"}]}], "]"}], "+", 
+           RowBox[{"DiagonalMatrix", "[", 
+            RowBox[{
+             RowBox[{"{", "b", "}"}], ",", 
+             RowBox[{"MM", "-", "2"}]}], "]"}]}]}],
+         FontWeight->"Bold"], 
+        StyleBox[";",
+         FontWeight->"Bold"], 
+        StyleBox["\[IndentingNewLine]",
+         FontWeight->"Bold"], 
+        RowBox[{
+         StyleBox["m1",
+          FontWeight->"Bold"], 
+         StyleBox[" ",
+          FontWeight->"Bold"], 
+         StyleBox["=",
+          FontWeight->"Bold"], 
+         StyleBox[" ",
+          FontWeight->"Bold"], 
+         RowBox[{
+          StyleBox["periodicblock",
+           FontWeight->"Bold"], 
+          StyleBox["[",
+           FontWeight->"Bold"], 
+          RowBox[{
+           FractionBox[
+            StyleBox[
+             RowBox[{"-", "2."}],
+             FontWeight->"Bold"], "3"], ",", 
+           FractionBox[
+            RowBox[{"-", "1"}], "6"]}], 
+          StyleBox["]",
+           FontWeight->"Bold"]}]}], 
+        StyleBox[";",
+         FontWeight->"Bold"], 
+        StyleBox["\[IndentingNewLine]",
+         FontWeight->"Bold"], 
+        StyleBox[
+         RowBox[{"m2", " ", "=", " ", 
+          RowBox[{"periodicblock", "[", 
+           RowBox[{
+            FractionBox[
+             StyleBox["10",
+              FontWeight->"Bold"], "3"], ",", 
+            FractionBox[
+             RowBox[{"-", "2"}], "3"]}], "]"}]}],
+         FontWeight->"Bold"], 
+        StyleBox[";",
+         FontWeight->"Bold"], 
+        StyleBox["\[IndentingNewLine]",
+         FontWeight->"Bold"], 
+        StyleBox[
+         RowBox[{"m3", " ", "=", 
+          RowBox[{"KroneckerProduct", "[", 
+           RowBox[{
+            RowBox[{"DiagonalMatrix", "[", 
+             RowBox[{
+              RowBox[{"Join", "[", 
+               RowBox[{
+                RowBox[{"Table", "[", 
+                 RowBox[{"1", ",", 
+                  RowBox[{"{", 
+                   RowBox[{"i", ",", "1", ",", "NN"}], "}"}]}], "]"}], ",", 
+                RowBox[{"{", "0", "}"}]}], "]"}], ",", "0"}], "]"}], ",", 
+            "m2"}], "]"}]}],
+         FontWeight->"Bold"], 
+        StyleBox[";",
+         FontWeight->"Bold"], 
+        StyleBox["\[IndentingNewLine]",
+         FontWeight->"Bold"], 
+        StyleBox["\[IndentingNewLine]",
+         FontWeight->"Bold"], 
+        StyleBox[
+         RowBox[{"m4", " ", "=", 
+          RowBox[{"KroneckerProduct", "[", 
+           RowBox[{
+            RowBox[{"DiagonalMatrix", "[", 
+             RowBox[{
+              RowBox[{"Join", "[", 
+               RowBox[{
+                RowBox[{"Table", "[", 
+                 RowBox[{"1", ",", 
+                  RowBox[{"{", 
+                   RowBox[{"i", ",", "1", ",", 
+                    RowBox[{"NN", "-", "1"}]}], "}"}]}], "]"}], ",", 
+                RowBox[{"{", "0", "}"}]}], "]"}], ",", "1"}], "]"}], ",", 
+            "m1"}], "]"}]}],
+         FontWeight->"Bold"], 
+        StyleBox[";",
+         FontWeight->"Bold"], 
+        StyleBox["\[IndentingNewLine]",
+         FontWeight->"Bold"], 
+        StyleBox[
+         RowBox[{"m5", " ", "=", 
+          RowBox[{"KroneckerProduct", "[", 
+           RowBox[{
+            RowBox[{"DiagonalMatrix", "[", 
+             RowBox[{
+              RowBox[{"Join", "[", 
+               RowBox[{
+                RowBox[{"Table", "[", 
+                 RowBox[{"1", ",", 
+                  RowBox[{"{", 
+                   RowBox[{"i", ",", "1", ",", 
+                    RowBox[{"NN", "-", "1"}]}], "}"}]}], "]"}], ",", 
+                RowBox[{"{", "0", "}"}]}], "]"}], ",", 
+              RowBox[{"-", "1"}]}], "]"}], ",", "m1"}], "]"}]}],
+         FontWeight->"Bold"], 
+        StyleBox[";",
+         FontWeight->"Bold"], 
+        StyleBox["\[IndentingNewLine]",
+         FontWeight->"Bold"], 
+        RowBox[{"m6", " ", "=", 
+         RowBox[{"KroneckerProduct", "[", 
+          RowBox[{
+           RowBox[{"DiagonalMatrix", "[", 
+            RowBox[{
+             RowBox[{"{", "1", "}"}], ",", "NN"}], "]"}], ",", "m1"}], 
+          "]"}]}], ";", "\[IndentingNewLine]", 
+        RowBox[{"m7", "=", 
+         RowBox[{
+          FractionBox["1", "2"], 
+          RowBox[{"IdentityMatrix", "[", 
+           RowBox[{"MM", "-", "1"}], "]"}]}]}], ";", "\[IndentingNewLine]", 
+        RowBox[{"m8", " ", "=", 
+         RowBox[{"KroneckerProduct", "[", 
+          RowBox[{
+           RowBox[{"DiagonalMatrix", "[", 
+            RowBox[{
+             RowBox[{"{", 
+              RowBox[{"0", ",", "1"}], "}"}], ",", 
+             RowBox[{
+              RowBox[{"-", "NN"}], "+", "1"}]}], "]"}], ",", "m7"}], "]"}]}], 
+        ";", "\[IndentingNewLine]", 
+        RowBox[{"m9", "=", 
+         RowBox[{"KroneckerProduct", "[", 
+          RowBox[{
+           RowBox[{"DiagonalMatrix", "[", 
+            RowBox[{
+             RowBox[{"Join", "[", 
+              RowBox[{
+               RowBox[{"Table", "[", 
+                RowBox[{"0", ",", 
+                 RowBox[{"{", 
+                  RowBox[{"i", ",", "1", ",", "NN"}], "}"}]}], "]"}], ",", 
+               RowBox[{"{", "1", "}"}]}], "]"}], ",", "0"}], "]"}], ",", 
+           RowBox[{"-", "m7"}]}], "]"}]}], ";", "\[IndentingNewLine]", 
+        RowBox[{
+         StyleBox["m",
+          FontWeight->"Bold"], 
+         StyleBox[" ",
+          FontWeight->"Bold"], 
+         StyleBox["=",
+          FontWeight->"Bold"], 
+         StyleBox[" ",
+          FontWeight->"Bold"], 
+         RowBox[{
+          StyleBox["m3",
+           FontWeight->"Bold"], "+", "m4", "+", "m5", "+", "m6", "+", "m8", 
+          "+", "m9"}]}], ";", "\[IndentingNewLine]", 
+        RowBox[{"newm", "=", 
+         RowBox[{
+          StyleBox["m3",
+           FontWeight->"Bold"], "+", "m4", "+", "m5"}]}], ";", 
+        "\[IndentingNewLine]", "\[IndentingNewLine]", 
+        RowBox[{
+         StyleBox["totalCharge",
+          FontWeight->"Bold"], 
+         StyleBox["=",
+          FontWeight->"Bold"], 
+         StyleBox[" ",
+          FontWeight->"Bold"], 
+         RowBox[{
+          RowBox[{
+           StyleBox["-",
+            FontWeight->"Bold"], 
+           RowBox[{
+            StyleBox["(",
+             FontWeight->"Bold"], 
+            FractionBox[
+             StyleBox["\[Epsilon]2",
+              FontWeight->"Bold"], "\[Epsilon]1"], 
+            StyleBox[")",
+             FontWeight->"Bold"]}]}], 
+          RowBox[{
+           StyleBox["(",
+            FontWeight->"Bold"], 
+           FractionBox[
+            StyleBox["\[Lambda]",
+             FontWeight->"Bold"], 
+            RowBox[{"N", "[", "\[Pi]", "]"}]], 
+           StyleBox[")",
+            FontWeight->"Bold"]}], 
+          RowBox[{"ArcTan", "[", 
+           FractionBox[
+            RowBox[{"MM", " ", "a"}], 
+            RowBox[{"2", "H"}]], "]"}]}]}], ";", 
+        StyleBox["\[IndentingNewLine]",
+         FontWeight->"Bold"], 
+        RowBox[{
+         StyleBox[
+          RowBox[{"chargeDist", "[", 
+           RowBox[{"x_", ",", "y_"}], "]"}],
+          FontWeight->"Bold"], 
+         StyleBox[":=",
+          FontWeight->"Bold"], 
+         RowBox[{
+          RowBox[{"-", 
+           RowBox[{"Sin", "[", 
+            FractionBox[
+             RowBox[{"\[Pi]", " ", "y"}], "MM"], "]"}]}], 
+          RowBox[{"Exp", "[", 
+           RowBox[{"-", 
+            FractionBox[
+             RowBox[{"2", "\[Pi]", " ", "x"}], "MM"]}], "]"}]}]}], ";", 
+        StyleBox["\[IndentingNewLine]",
+         FontWeight->"Bold"], "\[IndentingNewLine]", 
+        RowBox[{"chargeVec", "=", 
+         RowBox[{"Flatten", "[", 
+          RowBox[{
+           RowBox[{"Table", "[", "\[IndentingNewLine]", " ", 
+            RowBox[{
+             RowBox[{"N", "[", 
+              RowBox[{"chargeDist", "[", 
+               RowBox[{"i", " ", ",", "j"}], " ", "]"}], "]"}], ",", 
+             "\[IndentingNewLine]", 
+             RowBox[{"{", 
+              RowBox[{"i", ",", "1", ",", "NN"}], "}"}], ",", 
+             "\[IndentingNewLine]", 
+             RowBox[{"{", 
+              RowBox[{"j", ",", "1", ",", 
+               RowBox[{"MM", "-", "1"}]}], "}"}]}], "\[IndentingNewLine]", 
+            "]"}], ",", "1"}], "]"}]}], ";", "\[IndentingNewLine]", 
+        RowBox[{"tempTotal", "=", 
+         RowBox[{"chargeVec", "//", "Total"}]}], ";", "\[IndentingNewLine]", 
+        RowBox[{
+         StyleBox[
+          RowBox[{"n", "[", 
+           RowBox[{"x_", ",", "y_"}], "]"}],
+          FontWeight->"Bold"], 
+         StyleBox[":=",
+          FontWeight->"Bold"], 
+         RowBox[{
+          RowBox[{
+           StyleBox["-",
+            FontWeight->"Bold"], 
+           FractionBox[
+            RowBox[{"8", 
+             RowBox[{"N", "[", "\[Pi]", "]"}], "Ry", " ", "\[Alpha]"}], 
+            "\[Epsilon]2"]}], 
+          FractionBox[
+           RowBox[{"N", "[", 
+            RowBox[{"chargeDist", "[", 
+             RowBox[{"x", ",", "y"}], "]"}], "]"}], "tempTotal"], 
+          "totalCharge"}]}], ";", 
+        RowBox[{"(*", 
+         RowBox[{
+          StyleBox["If",
+           FontWeight->"Bold"], 
+          StyleBox["[",
+           FontWeight->"Bold"], 
+          RowBox[{
+           RowBox[{
+            StyleBox["x",
+             FontWeight->"Bold"], 
+            StyleBox["\[Equal]",
+             FontWeight->"Bold"], 
+            RowBox[{
+             StyleBox["Floor",
+              FontWeight->"Bold"], "[", 
+             RowBox[{
+              FractionBox[
+               StyleBox["1",
+                FontWeight->"Bold"], "2"], "NN", " ", "stepSize"}], "]"}]}], 
+           StyleBox[",",
+            FontWeight->"Bold"], 
+           FractionBox["0", 
+            RowBox[{"4", " ", "\[Pi]", " ", "\[Epsilon]"}]], 
+           StyleBox[",",
+            FontWeight->"Bold"], 
+           RowBox[{
+            FractionBox["0", 
+             RowBox[{"4", " ", "\[Pi]", " ", "\[Epsilon]"}]], 
+            StyleBox[
+             RowBox[{"Cos", "[", 
+              RowBox[{"(", 
+               RowBox[{"x", "+", "y"}], ")"}], "]"}],
+             FontWeight->"Bold"]}]}], 
+          StyleBox["]",
+           FontWeight->"Bold"]}], "*)"}], 
+        StyleBox[
+         RowBox[{"(*", 
+          RowBox[{"Charge", " ", "distribution"}], "*)"}],
+         FontWeight->"Bold"], 
+        StyleBox["\[IndentingNewLine]",
+         FontWeight->"Bold"], 
+        RowBox[{
+         StyleBox[
+          RowBox[{"e1", "[", "j_", "]"}],
+          FontWeight->"Bold"], 
+         StyleBox[":=",
+          FontWeight->"Bold"], 
+         FractionBox[
+          RowBox[{"8", 
+           RowBox[{"N", "[", "\[Pi]", "]"}], "Ry", " ", "\[Alpha]", " ", 
+           "\[Lambda]", " ", "H", " ", "a"}], 
+          RowBox[{"2", " ", 
+           RowBox[{"N", "[", "\[Pi]", "]"}], "\[Epsilon]1", " ", 
+           RowBox[{"(", 
+            RowBox[{
+             SuperscriptBox["H", "2"], "+", 
+             RowBox[{
+              SuperscriptBox[
+               RowBox[{"(", 
+                RowBox[{"j", "-", 
+                 RowBox[{"Floor", "[", 
+                  FractionBox[
+                   RowBox[{"MM", "+", "1"}], "2"], "]"}]}], ")"}], "2"], 
+              SuperscriptBox["a", "2"]}]}], ")"}]}]]}], ";", 
+        StyleBox[
+         RowBox[{"(*", 
+          RowBox[{
+          "Normal", " ", "component", " ", "of", " ", "electric", " ", 
+           "field", " ", "at", " ", "top", " ", "edge", " ", "of", " ", "the",
+            " ", "grid"}], "*)"}],
+         FontWeight->"Bold"], 
+        StyleBox["\[IndentingNewLine]",
+         FontWeight->"Bold"], 
+        StyleBox["\[IndentingNewLine]",
+         FontWeight->"Bold"], 
+        StyleBox[
+         RowBox[{"(*", 
+          RowBox[{
+           RowBox[{
+           "Defines", " ", "the", " ", "list", " ", "with", " ", "the", " ", 
+            "charge", " ", "distribution", " ", 
+            SubscriptBox[
+             StyleBox["\[Rho]",
+              FontWeight->"Bold"], "ij"], " ", "generated", " ", "from", " ", 
+            "the", " ", "user"}], ",", " ", 
+           RowBox[{
+           "augmented", " ", "with", " ", "the", " ", "boundary", " ", 
+            "conditions"}]}], " ", "*)"}],
+         FontWeight->"Bold"], 
+        StyleBox["\[IndentingNewLine]",
+         FontWeight->"Bold"], 
+        StyleBox[
+         RowBox[{"chargeVector", "  ", "=", " ", "\[IndentingNewLine]", 
+          RowBox[{
+           RowBox[{"Table", "[", "\[IndentingNewLine]", " ", 
+            RowBox[{
+             RowBox[{"n", "[", 
+              RowBox[{"i", " ", ",", "j"}], " ", "]"}], ",", 
+             "\[IndentingNewLine]", 
+             RowBox[{"{", 
+              RowBox[{"i", ",", "1", ",", "NN"}], "}"}], ",", 
+             "\[IndentingNewLine]", 
+             RowBox[{"{", 
+              RowBox[{"j", ",", "1", ",", 
+               RowBox[{"MM", "-", "1"}]}], "}"}]}], "\[IndentingNewLine]", 
+            "]"}], "//", "Flatten"}]}],
+         FontWeight->"Bold"], 
+        StyleBox[";",
+         FontWeight->"Bold"], 
+        StyleBox["\[IndentingNewLine]",
+         FontWeight->"Bold"], 
+        RowBox[{"exteriorPoints", 
+         StyleBox[" ",
+          FontWeight->"Bold"], 
+         StyleBox["=",
+          FontWeight->"Bold"], 
+         StyleBox[" ",
+          FontWeight->"Bold"], 
+         StyleBox["\[IndentingNewLine]",
+          FontWeight->"Bold"], 
+         RowBox[{
+          StyleBox[
+           RowBox[{"Table", "[", "\[IndentingNewLine]", "  ", 
+            RowBox[{
+             RowBox[{"N", "[", 
+              RowBox[{"e1", "[", "j", " ", "]"}], "]"}], " ", ",", 
+             "\[IndentingNewLine]", 
+             RowBox[{"{", 
+              RowBox[{"j", ",", "1", ",", 
+               RowBox[{"MM", "-", "1"}]}], "}"}]}], "\[IndentingNewLine]", 
+            "]"}],
+           FontWeight->"Bold"], 
+          StyleBox["//",
+           FontWeight->"Bold"], "Flatten"}]}], 
+        StyleBox[";",
+         FontWeight->"Bold"], 
+        StyleBox["\[IndentingNewLine]",
+         FontWeight->"Bold"], 
+        RowBox[{"chargeVector", " ", "=", " ", 
+         RowBox[{"Join", "[", 
+          RowBox[{"chargeVector", ",", " ", "exteriorPoints"}], "]"}]}], ";", 
+        "\[IndentingNewLine]", 
+        RowBox[{"chargeVector", "=", 
+         RowBox[{"chargeVector", "-", 
+          RowBox[{
+           FractionBox["1", "2"], 
+           RowBox[{"newm", ".", "chargeVector"}]}]}]}], ";", 
+        StyleBox["\[IndentingNewLine]",
+         FontWeight->"Bold"], 
+        StyleBox[
+         RowBox[{"(*", 
+          RowBox[{"Calculates", " ", "the", " ", "potential"}], "*)"}],
+         FontWeight->"Bold"], 
+        StyleBox["\[IndentingNewLine]",
+         FontWeight->"Bold"], 
+        StyleBox[
+         RowBox[{"potential", " ", "=", " ", 
+          RowBox[{"LinearSolve", "[", 
+           RowBox[{"m", ",", "chargeVector"}], "]"}]}],
+         FontWeight->"Bold"], 
+        StyleBox[";",
+         FontWeight->"Bold"], 
+        StyleBox["\[IndentingNewLine]",
+         FontWeight->"Bold"], "\[IndentingNewLine]", 
+        RowBox[{
+         StyleBox["halfSpaceVoltage",
+          FontWeight->"Bold"], 
+         StyleBox["=",
+          FontWeight->"Bold"], 
+         RowBox[{
+          StyleBox["Flatten",
+           FontWeight->"Bold"], 
+          StyleBox["[",
+           FontWeight->"Bold"], 
+          RowBox[{
+           RowBox[{
+            StyleBox["Table",
+             FontWeight->"Bold"], 
+            StyleBox["[",
+             FontWeight->"Bold"], 
+            StyleBox["\[IndentingNewLine]",
+             FontWeight->"Bold"], 
+            RowBox[{
+             RowBox[{
+              StyleBox["{",
+               FontWeight->"Bold"], 
+              RowBox[{
+               StyleBox["i",
+                FontWeight->"Bold"], 
+               StyleBox[",",
+                FontWeight->"Bold"], 
+               RowBox[{
+                RowBox[{"Floor", "[", 
+                 FractionBox[
+                  StyleBox[
+                   RowBox[{"MM", "+", "1"}],
+                   FontWeight->"Bold"], "2"], "]"}], "-", 
+                StyleBox["j",
+                 FontWeight->"Bold"], 
+                StyleBox["+",
+                 FontWeight->"Bold"], 
+                StyleBox["1",
+                 FontWeight->"Bold"]}], 
+               StyleBox[",",
+                FontWeight->"Bold"], 
+               RowBox[{"potential", "[", 
+                RowBox[{"[", 
+                 RowBox[{"j", " ", "+", " ", 
+                  RowBox[{
+                   RowBox[{"(", 
+                    RowBox[{"MM", "-", "1"}], ")"}], 
+                   RowBox[{"(", 
+                    RowBox[{"i", "-", "1"}], ")"}]}]}], "]"}], "]"}]}], 
+              StyleBox["}",
+               FontWeight->"Bold"]}], 
+             StyleBox[",",
+              FontWeight->"Bold"], 
+             StyleBox["\[IndentingNewLine]",
+              FontWeight->"Bold"], 
+             StyleBox[
+              RowBox[{"{", 
+               RowBox[{"i", ",", "1", ",", "NN"}], "}"}],
+              FontWeight->"Bold"], 
+             StyleBox[",",
+              FontWeight->"Bold"], 
+             StyleBox["\[IndentingNewLine]",
+              FontWeight->"Bold"], 
+             RowBox[{
+              StyleBox["{",
+               FontWeight->"Bold"], 
+              RowBox[{
+               StyleBox["j",
+                FontWeight->"Bold"], 
+               StyleBox[",",
+                FontWeight->"Bold"], 
+               RowBox[{"Floor", "[", 
+                FractionBox[
+                 StyleBox[
+                  RowBox[{"MM", "+", "1"}],
+                  FontWeight->"Bold"], "2"], "]"}], ",", "1", ",", 
+               RowBox[{"-", "1"}]}], 
+              StyleBox["}",
+               FontWeight->"Bold"]}]}], 
+            StyleBox["\[IndentingNewLine]",
+             FontWeight->"Bold"], 
+            StyleBox["]",
+             FontWeight->"Bold"]}], 
+           StyleBox[",",
+            FontWeight->"Bold"], 
+           StyleBox["1",
+            FontWeight->"Bold"]}], 
+          StyleBox["]",
+           FontWeight->"Bold"]}]}], 
+        StyleBox[";",
+         FontWeight->"Bold"], 
+        StyleBox["\[IndentingNewLine]",
+         FontWeight->"Bold"], 
+        RowBox[{
+         StyleBox["halfSpaceList",
+          FontWeight->"Bold"], "=", 
+         RowBox[{
+          RowBox[{"Table", "[", "\[IndentingNewLine]", 
+           RowBox[{
+            RowBox[{
+             StyleBox[
+              RowBox[{"halfSpaceVoltage", "[", 
+               RowBox[{"[", 
+                RowBox[{"All", ",", "3"}], "]"}], "]"}],
+              FontWeight->"Bold"], "[", 
+             RowBox[{"[", "j", "]"}], "]"}], ",", "\[IndentingNewLine]", 
+            RowBox[{"{", 
+             RowBox[{"j", ",", "1", ",", 
+              RowBox[{
+               StyleBox[
+                RowBox[{"halfSpaceVoltage", "[", 
+                 RowBox[{"[", 
+                  RowBox[{"All", ",", "3"}], "]"}], "]"}],
+                FontWeight->"Bold"], 
+               StyleBox["//",
+                FontWeight->"Bold"], "Length"}]}], "}"}], ",", 
+            "\[IndentingNewLine]", 
+            RowBox[{"{", 
+             RowBox[{"i", ",", "1", ",", "3"}], "}"}]}], 
+           "\[IndentingNewLine]", "]"}], "//", "Flatten"}]}], ";", 
+        "\[IndentingNewLine]", "\[IndentingNewLine]", 
+        RowBox[{"voltageMatrix", "=", 
+         RowBox[{"DiagonalMatrix", "[", 
+          StyleBox["halfSpaceList",
+           FontWeight->"Bold"], "]"}]}], ";", "\[IndentingNewLine]", 
+        RowBox[{"tx", " ", "=", " ", 
+         RowBox[{"DiagonalMatrix", "[", 
+          RowBox[{
+           RowBox[{"{", 
+            RowBox[{"t2", ",", "t1", ",", "t1"}], "}"}], ",", "0"}], "]"}]}], 
+        ";", "\[IndentingNewLine]", 
+        RowBox[{"ty", " ", "=", " ", 
+         RowBox[{"DiagonalMatrix", "[", 
+          RowBox[{
+           RowBox[{"{", 
+            RowBox[{"t1", ",", "t2", ",", "t1"}], "}"}], ",", "0"}], "]"}]}], 
+        ";", "\[IndentingNewLine]", "\[IndentingNewLine]", 
+        RowBox[{"(*", 
+         RowBox[{
+          RowBox[{
+          "These", " ", "4", " ", "matrices", " ", "are", " ", "interatomic", 
+           " ", "bonding", " ", "in", " ", "each", " ", "of", " ", "the", " ",
+            "4", " ", "directions", " ", "in", " ", "the", " ", "x"}], "-", 
+          RowBox[{"y", " ", "plane"}]}], "*)"}], "\[IndentingNewLine]", 
+        RowBox[{"m2", " ", "=", " ", 
+         RowBox[{"KroneckerProduct", "[", 
+          RowBox[{
+           RowBox[{"DiagonalMatrix", "[", 
+            RowBox[{
+             RowBox[{"Table", "[", 
+              RowBox[{"1", ",", 
+               RowBox[{"{", 
+                RowBox[{
+                 RowBox[{"nn", "*", "mm"}], "-", "1"}], "}"}]}], "]"}], ",", 
+             "1"}], "]"}], ",", "ty"}], "]"}]}], ";", "\[IndentingNewLine]", 
+        RowBox[{"m3", " ", "=", " ", 
+         RowBox[{"KroneckerProduct", "[", 
+          RowBox[{
+           RowBox[{"DiagonalMatrix", "[", 
+            RowBox[{
+             RowBox[{"Table", "[", 
+              RowBox[{"1", ",", 
+               RowBox[{"{", 
+                RowBox[{
+                 RowBox[{"nn", "*", "mm"}], "-", "1"}], "}"}]}], "]"}], ",", 
+             RowBox[{"-", "1"}]}], "]"}], ",", "ty"}], "]"}]}], ";", 
+        "\[IndentingNewLine]", 
+        RowBox[{"m4", " ", "=", " ", 
+         RowBox[{"KroneckerProduct", "[", 
+          RowBox[{
+           RowBox[{"DiagonalMatrix", "[", 
+            RowBox[{
+             RowBox[{"Table", "[", 
+              RowBox[{"1", ",", 
+               RowBox[{"{", 
+                RowBox[{
+                 RowBox[{"nn", "*", "mm"}], "-", "mm"}], "}"}]}], "]"}], ",", 
+             "mm"}], "]"}], ",", "tx"}], "]"}]}], ";", "\[IndentingNewLine]", 
+        RowBox[{"m5", " ", "=", " ", 
+         RowBox[{"KroneckerProduct", "[", 
+          RowBox[{
+           RowBox[{"DiagonalMatrix", "[", 
+            RowBox[{
+             RowBox[{"Table", "[", 
+              RowBox[{"1", ",", 
+               RowBox[{"{", 
+                RowBox[{
+                 RowBox[{"nn", "*", "mm"}], "-", "mm"}], "}"}]}], "]"}], ",", 
+             RowBox[{"-", "mm"}]}], "]"}], ",", "tx"}], "]"}]}], ";", 
+        "\[IndentingNewLine]", 
+        RowBox[{"{", 
+         RowBox[{
+          RowBox[{
+          "m2", "+", "m3", "+", "m4", "+", "m5", "+", "voltageMatrix"}], ",", 
+          "totalCharge"}], "}"}]}]}], "\[IndentingNewLine]", "]"}]}], ";"}], 
+   "\n", 
+   RowBox[{
+    RowBox[{
+     RowBox[{"BaseMatrixTakesChargeList", "[", 
+      RowBox[{
+      "MM_", ",", "NN_", ",", "chargeList_List", ",", "\[Epsilon]1_", ",", 
+       "\[Epsilon]2_", ",", "H_", ",", "a_", ",", "\[Lambda]_", ",", "t1_", 
+       ",", "t2_"}], " ", "]"}], ":=", 
+     RowBox[{"Module", "[", "\[IndentingNewLine]", 
+      RowBox[{
+       RowBox[{"{", 
+        RowBox[{
+        "m", ",", "m1", ",", "m2", ",", "m3", ",", "m4", ",", "m5", ",", "m6",
+          ",", "m7", ",", "m8", ",", "m9", ",", "newm", 
+         StyleBox[",",
+          FontWeight->"Bold"], 
+         StyleBox["\[Gamma]",
+          FontWeight->"Bold"], ",", "\[Alpha]", ",", "Ry", ",", 
+         "chargeVector", ",", "potential", ",", "exteriorPoints", ",", 
+         "totalCharge", ",", "halfSpaceVoltage", ",", "halfSpaceList", ",", 
+         "voltageMatrix", ",", "tempTotal", ",", "tx", ",", "ty", ",", "nn", 
+         ",", "mm"}], "}"}], ",", 
+       StyleBox["\[IndentingNewLine]",
+        FontWeight->"Bold"], 
+       RowBox[{
+        RowBox[{
+         StyleBox["\[Alpha]",
+          FontWeight->"Bold"], 
+         StyleBox["=",
+          FontWeight->"Bold"], 
+         FractionBox[".529", "a"]}], ";", 
+        RowBox[{"(*", 
+         RowBox[{
+          FractionBox[
+           SubscriptBox["a", "0"], "a"], ",", " ", 
+          RowBox[{"where", " ", 
+           SubscriptBox["a", "0"], " ", "is", " ", "the", " ", "Bohr", " ", 
+           "radius"}]}], "*)"}], "\[IndentingNewLine]", 
+        RowBox[{"Ry", "=", "13.60569253"}], ";", 
+        RowBox[{"(*", 
+         RowBox[{
+          RowBox[{"Rydberg", " ", "unit", " ", "of", " ", "energy"}], ",", 
+          " ", 
+          RowBox[{"in", " ", "eV"}]}], "*)"}], 
+        StyleBox["\[IndentingNewLine]",
+         FontWeight->"Bold"], 
+        RowBox[{"mm", "=", 
+         RowBox[{"Floor", "[", 
+          FractionBox[
+           RowBox[{"MM", "+", "1"}], "2"], "]"}]}], ";", 
+        RowBox[{"(*", 
+         RowBox[{"along", " ", "top", " ", "of", " ", "half", " ", "space"}], 
+         "*)"}], "\[IndentingNewLine]", 
+        RowBox[{"nn", "=", "NN"}], ";", "\[IndentingNewLine]", 
+        StyleBox["\[IndentingNewLine]",
+         FontWeight->"Bold"], 
+        StyleBox[
+         RowBox[{"(*", 
+          RowBox[{
+           RowBox[{
+           "Poisson", " ", "solver", " ", "that", " ", "implements", " ", 
+            "the", " ", "first", " ", "part", " ", "of", " ", "the", " ", 
+            "algorithm", " ", "described", " ", "below"}], " ", "-", " ", 
+           RowBox[{
+           "it", " ", "represents", " ", "the", " ", "Laplacian", " ", "as", 
+            " ", "a", " ", "matrix", " ", "operator", " ", "then", " ", 
+            "inverts", " ", 
+            RowBox[{"it", ".", " ", "Any"}], " ", "solution", " ", "to", " ", 
+            RowBox[{"Poisson", "'"}], "s", " ", "equation", " ", "is", " ", 
+            "now", " ", "found", " ", "by", " ", "multiplying", " ", "the", 
+            " ", "inverse", " ", "matrix", " ", "by", " ", "the", " ", 
+            "charge", " ", "distribution"}]}], "*)"}],
+         FontWeight->"Bold"], 
+        StyleBox["\[IndentingNewLine]",
+         FontWeight->"Bold"], 
+        StyleBox[
+         RowBox[{"(*", 
+          RowBox[{
+          "This", " ", "is", " ", "a", " ", "symmetric", " ", "finite", " ", 
+           "difference", " ", "method", " ", "to", " ", "solve", " ", "the", 
+           " ", "Poisson", " ", "Equation"}], "*)"}],
+         FontWeight->"Bold"], 
+        StyleBox[" ",
+         FontWeight->"Bold"], 
+        StyleBox["\[IndentingNewLine]",
+         FontWeight->"Bold"], 
+        StyleBox[
+         RowBox[{"(*", 
+          RowBox[{
+           RowBox[{
+            RowBox[{
+             RowBox[{"en", ".", "wikipedia", ".", "org"}], "/", "wiki"}], "/",
+             "Discrete_Poisson"}], "_equation"}], "*)"}],
+         FontWeight->"Bold"], 
+        StyleBox["\[IndentingNewLine]",
+         FontWeight->"Bold"], 
+        StyleBox[
+         RowBox[{"(*", 
+          RowBox[{
+           RowBox[{"construct", " ", "D"}], ",", " ", 
+           RowBox[{
+           "the", " ", "matrix", " ", "operator", " ", "that", " ", 
+            "corresponds", " ", "to", " ", "the", " ", 
+            RowBox[{"Laplacian", ".", " ", "This"}], " ", "is", " ", "a", " ",
+             "9", " ", "point", " ", "stencil"}]}], "*)"}],
+         FontWeight->"Bold"], 
+        StyleBox["\[IndentingNewLine]",
+         FontWeight->"Bold"], 
+        StyleBox[
+         RowBox[{
+          RowBox[{"periodicblock", "[", 
+           RowBox[{"b_", ",", "c_"}], "]"}], ":=", 
+          RowBox[{
+           RowBox[{"c", " ", 
+            RowBox[{"IdentityMatrix", "[", 
+             RowBox[{"MM", "-", "1"}], "]"}]}], "+", 
+           RowBox[{"DiagonalMatrix", "[", 
+            RowBox[{
+             RowBox[{"Table", "[", 
+              RowBox[{"b", ",", 
+               RowBox[{"{", 
+                RowBox[{"i", ",", "0", ",", 
+                 RowBox[{"MM", "-", "3"}]}], "}"}]}], "]"}], ",", "1"}], 
+            "]"}], "+", 
+           RowBox[{"DiagonalMatrix", "[", 
+            RowBox[{
+             RowBox[{"Table", "[", 
+              RowBox[{"b", ",", 
+               RowBox[{"{", 
+                RowBox[{"i", ",", "0", ",", 
+                 RowBox[{"MM", "-", "3"}]}], "}"}]}], "]"}], ",", 
+             RowBox[{"-", "1"}]}], "]"}], "+", 
+           RowBox[{"DiagonalMatrix", "[", 
+            RowBox[{
+             RowBox[{"{", "b", "}"}], ",", 
+             RowBox[{
+              RowBox[{"-", "MM"}], "+", "2"}]}], "]"}], "+", 
+           RowBox[{"DiagonalMatrix", "[", 
+            RowBox[{
+             RowBox[{"{", "b", "}"}], ",", 
+             RowBox[{"MM", "-", "2"}]}], "]"}]}]}],
+         FontWeight->"Bold"], 
+        StyleBox[";",
+         FontWeight->"Bold"], 
+        StyleBox["\[IndentingNewLine]",
+         FontWeight->"Bold"], 
+        RowBox[{
+         StyleBox["m1",
+          FontWeight->"Bold"], 
+         StyleBox[" ",
+          FontWeight->"Bold"], 
+         StyleBox["=",
+          FontWeight->"Bold"], 
+         StyleBox[" ",
+          FontWeight->"Bold"], 
+         RowBox[{
+          StyleBox["periodicblock",
+           FontWeight->"Bold"], 
+          StyleBox["[",
+           FontWeight->"Bold"], 
+          RowBox[{
+           FractionBox[
+            StyleBox[
+             RowBox[{"-", "2."}],
+             FontWeight->"Bold"], "3"], ",", 
+           FractionBox[
+            RowBox[{"-", "1"}], "6"]}], 
+          StyleBox["]",
+           FontWeight->"Bold"]}]}], 
+        StyleBox[";",
+         FontWeight->"Bold"], 
+        StyleBox["\[IndentingNewLine]",
+         FontWeight->"Bold"], 
+        StyleBox[
+         RowBox[{"m2", " ", "=", " ", 
+          RowBox[{"periodicblock", "[", 
+           RowBox[{
+            FractionBox[
+             StyleBox["10",
+              FontWeight->"Bold"], "3"], ",", 
+            FractionBox[
+             RowBox[{"-", "2"}], "3"]}], "]"}]}],
+         FontWeight->"Bold"], 
+        StyleBox[";",
+         FontWeight->"Bold"], 
+        StyleBox["\[IndentingNewLine]",
+         FontWeight->"Bold"], 
+        StyleBox[
+         RowBox[{"m3", " ", "=", 
+          RowBox[{"KroneckerProduct", "[", 
+           RowBox[{
+            RowBox[{"DiagonalMatrix", "[", 
+             RowBox[{
+              RowBox[{"Join", "[", 
+               RowBox[{
+                RowBox[{"Table", "[", 
+                 RowBox[{"1", ",", 
+                  RowBox[{"{", 
+                   RowBox[{"i", ",", "1", ",", "NN"}], "}"}]}], "]"}], ",", 
+                RowBox[{"{", "0", "}"}]}], "]"}], ",", "0"}], "]"}], ",", 
+            "m2"}], "]"}]}],
+         FontWeight->"Bold"], 
+        StyleBox[";",
+         FontWeight->"Bold"], 
+        StyleBox["\[IndentingNewLine]",
+         FontWeight->"Bold"], 
+        StyleBox["\[IndentingNewLine]",
+         FontWeight->"Bold"], 
+        StyleBox[
+         RowBox[{"m4", " ", "=", 
+          RowBox[{"KroneckerProduct", "[", 
+           RowBox[{
+            RowBox[{"DiagonalMatrix", "[", 
+             RowBox[{
+              RowBox[{"Join", "[", 
+               RowBox[{
+                RowBox[{"Table", "[", 
+                 RowBox[{"1", ",", 
+                  RowBox[{"{", 
+                   RowBox[{"i", ",", "1", ",", 
+                    RowBox[{"NN", "-", "1"}]}], "}"}]}], "]"}], ",", 
+                RowBox[{"{", "0", "}"}]}], "]"}], ",", "1"}], "]"}], ",", 
+            "m1"}], "]"}]}],
+         FontWeight->"Bold"], 
+        StyleBox[";",
+         FontWeight->"Bold"], 
+        StyleBox["\[IndentingNewLine]",
+         FontWeight->"Bold"], 
+        StyleBox[
+         RowBox[{"m5", " ", "=", 
+          RowBox[{"KroneckerProduct", "[", 
+           RowBox[{
+            RowBox[{"DiagonalMatrix", "[", 
+             RowBox[{
+              RowBox[{"Join", "[", 
+               RowBox[{
+                RowBox[{"Table", "[", 
+                 RowBox[{"1", ",", 
+                  RowBox[{"{", 
+                   RowBox[{"i", ",", "1", ",", 
+                    RowBox[{"NN", "-", "1"}]}], "}"}]}], "]"}], ",", 
+                RowBox[{"{", "0", "}"}]}], "]"}], ",", 
+              RowBox[{"-", "1"}]}], "]"}], ",", "m1"}], "]"}]}],
+         FontWeight->"Bold"], 
+        StyleBox[";",
+         FontWeight->"Bold"], 
+        StyleBox["\[IndentingNewLine]",
+         FontWeight->"Bold"], 
+        RowBox[{"m6", " ", "=", 
+         RowBox[{"KroneckerProduct", "[", 
+          RowBox[{
+           RowBox[{"DiagonalMatrix", "[", 
+            RowBox[{
+             RowBox[{"{", "1", "}"}], ",", "NN"}], "]"}], ",", "m1"}], 
+          "]"}]}], ";", "\[IndentingNewLine]", 
+        RowBox[{"m7", "=", 
+         RowBox[{
+          FractionBox["1", "2"], 
+          RowBox[{"IdentityMatrix", "[", 
+           RowBox[{"MM", "-", "1"}], "]"}]}]}], ";", "\[IndentingNewLine]", 
+        RowBox[{"m8", " ", "=", 
+         RowBox[{"KroneckerProduct", "[", 
+          RowBox[{
+           RowBox[{"DiagonalMatrix", "[", 
+            RowBox[{
+             RowBox[{"{", 
+              RowBox[{"0", ",", "1"}], "}"}], ",", 
+             RowBox[{
+              RowBox[{"-", "NN"}], "+", "1"}]}], "]"}], ",", "m7"}], "]"}]}], 
+        ";", "\[IndentingNewLine]", 
+        RowBox[{"m9", "=", 
+         RowBox[{"KroneckerProduct", "[", 
+          RowBox[{
+           RowBox[{"DiagonalMatrix", "[", 
+            RowBox[{
+             RowBox[{"Join", "[", 
+              RowBox[{
+               RowBox[{"Table", "[", 
+                RowBox[{"0", ",", 
+                 RowBox[{"{", 
+                  RowBox[{"i", ",", "1", ",", "NN"}], "}"}]}], "]"}], ",", 
+               RowBox[{"{", "1", "}"}]}], "]"}], ",", "0"}], "]"}], ",", 
+           RowBox[{"-", "m7"}]}], "]"}]}], ";", "\[IndentingNewLine]", 
+        RowBox[{
+         StyleBox["m",
+          FontWeight->"Bold"], 
+         StyleBox[" ",
+          FontWeight->"Bold"], 
+         StyleBox["=",
+          FontWeight->"Bold"], 
+         StyleBox[" ",
+          FontWeight->"Bold"], 
+         RowBox[{
+          StyleBox["m3",
+           FontWeight->"Bold"], "+", "m4", "+", "m5", "+", "m6", "+", "m8", 
+          "+", "m9"}]}], ";", "\[IndentingNewLine]", 
+        RowBox[{"newm", "=", 
+         RowBox[{
+          StyleBox["m3",
+           FontWeight->"Bold"], "+", "m4", "+", "m5"}]}], ";", 
+        "\[IndentingNewLine]", "\[IndentingNewLine]", 
+        RowBox[{
+         StyleBox["totalCharge",
+          FontWeight->"Bold"], 
+         StyleBox["=",
+          FontWeight->"Bold"], 
+         StyleBox[" ",
+          FontWeight->"Bold"], 
+         RowBox[{
+          RowBox[{
+           StyleBox["-",
+            FontWeight->"Bold"], 
+           RowBox[{
+            StyleBox["(",
+             FontWeight->"Bold"], 
+            FractionBox[
+             StyleBox["\[Epsilon]2",
+              FontWeight->"Bold"], "\[Epsilon]1"], 
+            StyleBox[")",
+             FontWeight->"Bold"]}]}], 
+          RowBox[{
+           StyleBox["(",
+            FontWeight->"Bold"], 
+           FractionBox[
+            StyleBox["\[Lambda]",
+             FontWeight->"Bold"], 
+            RowBox[{"N", "[", "\[Pi]", "]"}]], 
+           StyleBox[")",
+            FontWeight->"Bold"]}], 
+          RowBox[{"ArcTan", "[", 
+           FractionBox[
+            RowBox[{"MM", " ", "a"}], 
+            RowBox[{"2", "H"}]], "]"}]}]}], ";", 
+        StyleBox["\[IndentingNewLine]",
+         FontWeight->"Bold"], 
+        StyleBox["\[IndentingNewLine]",
+         FontWeight->"Bold"], "\[IndentingNewLine]", 
+        RowBox[{"tempTotal", "=", 
+         RowBox[{
+          RowBox[{"Flatten", "[", "chargeList", "]"}], "//", "Total"}]}], ";",
+         "\[IndentingNewLine]", 
+        RowBox[{"(*", 
+         RowBox[{
+         "coefficient", " ", "in", " ", "front", " ", "of", " ", "n", " ", 
+          "on", " ", "the", " ", "right", " ", "hand", " ", "side", " ", "of",
+           " ", "the", " ", "poisson", " ", "equation"}], "*)"}], 
+        "\[IndentingNewLine]", 
+        RowBox[{"\[Gamma]", "=", 
+         RowBox[{
+          RowBox[{"-", 
+           FractionBox[
+            RowBox[{"8", 
+             RowBox[{"N", "[", "\[Pi]", "]"}], "Ry", " ", "\[Alpha]"}], 
+            "\[Epsilon]2"]}], 
+          FractionBox["totalCharge", "tempTotal"]}]}], ";", 
+        StyleBox["\[IndentingNewLine]",
+         FontWeight->"Bold"], 
+        RowBox[{
+         StyleBox[
+          RowBox[{"e1", "[", "j_", "]"}],
+          FontWeight->"Bold"], 
+         StyleBox[":=",
+          FontWeight->"Bold"], 
+         FractionBox[
+          RowBox[{"8", 
+           RowBox[{"N", "[", "\[Pi]", "]"}], "Ry", " ", "\[Alpha]", " ", 
+           "\[Lambda]", " ", "H", " ", "a"}], 
+          RowBox[{"2", " ", 
+           RowBox[{"N", "[", "\[Pi]", "]"}], "\[Epsilon]1", " ", 
+           RowBox[{"(", 
+            RowBox[{
+             SuperscriptBox["H", "2"], "+", 
+             RowBox[{
+              SuperscriptBox[
+               RowBox[{"(", 
+                RowBox[{"j", "-", 
+                 RowBox[{"Floor", "[", 
+                  FractionBox[
+                   RowBox[{"MM", "+", "1"}], "2"], "]"}]}], ")"}], "2"], 
+              SuperscriptBox["a", "2"]}]}], ")"}]}]]}], ";", 
+        StyleBox[
+         RowBox[{"(*", 
+          RowBox[{
+          "Normal", " ", "component", " ", "of", " ", "electric", " ", 
+           "field", " ", "at", " ", "top", " ", "edge", " ", "of", " ", "the",
+            " ", "grid"}], "*)"}],
+         FontWeight->"Bold"], 
+        StyleBox["\[IndentingNewLine]",
+         FontWeight->"Bold"], 
+        StyleBox["\[IndentingNewLine]",
+         FontWeight->"Bold"], 
+        StyleBox[
+         RowBox[{"(*", 
+          RowBox[{
+           RowBox[{
+           "Defines", " ", "the", " ", "list", " ", "with", " ", "the", " ", 
+            "charge", " ", "distribution", " ", 
+            SubscriptBox[
+             StyleBox["\[Rho]",
+              FontWeight->"Bold"], "ij"], " ", "generated", " ", "from", " ", 
+            "the", " ", "user"}], ",", " ", 
+           RowBox[{
+           "augmented", " ", "with", " ", "the", " ", "boundary", " ", 
+            "conditions"}]}], " ", "*)"}],
+         FontWeight->"Bold"], 
+        StyleBox["\[IndentingNewLine]",
+         FontWeight->"Bold"], 
+        RowBox[{
+         StyleBox["chargeVector",
+          FontWeight->"Bold"], 
+         StyleBox["  ",
+          FontWeight->"Bold"], 
+         StyleBox["=",
+          FontWeight->"Bold"], 
+         StyleBox[" ",
+          FontWeight->"Bold"], 
+         RowBox[{
+          StyleBox["\[Gamma]",
+           FontWeight->"Bold"], 
+          StyleBox[" ",
+           FontWeight->"Bold"], "chargeList"}]}], 
+        StyleBox[";",
+         FontWeight->"Bold"], 
+        StyleBox["\[IndentingNewLine]",
+         FontWeight->"Bold"], 
+        RowBox[{"exteriorPoints", 
+         StyleBox[" ",
+          FontWeight->"Bold"], 
+         StyleBox["=",
+          FontWeight->"Bold"], 
+         StyleBox[" ",
+          FontWeight->"Bold"], 
+         StyleBox["\[IndentingNewLine]",
+          FontWeight->"Bold"], 
+         RowBox[{
+          StyleBox[
+           RowBox[{"Table", "[", "\[IndentingNewLine]", "  ", 
+            RowBox[{
+             RowBox[{"N", "[", 
+              RowBox[{"e1", "[", "j", " ", "]"}], "]"}], " ", ",", 
+             "\[IndentingNewLine]", 
+             RowBox[{"{", 
+              RowBox[{"j", ",", "1", ",", 
+               RowBox[{"MM", "-", "1"}]}], "}"}]}], "\[IndentingNewLine]", 
+            "]"}],
+           FontWeight->"Bold"], 
+          StyleBox["//",
+           FontWeight->"Bold"], "Flatten"}]}], 
+        StyleBox[";",
+         FontWeight->"Bold"], 
+        StyleBox["\[IndentingNewLine]",
+         FontWeight->"Bold"], 
+        RowBox[{"chargeVector", " ", "=", " ", 
+         RowBox[{"Join", "[", 
+          RowBox[{"chargeVector", ",", " ", "exteriorPoints"}], "]"}]}], ";", 
+        "\[IndentingNewLine]", 
+        RowBox[{"chargeVector", "=", 
+         RowBox[{"chargeVector", "-", 
+          RowBox[{
+           FractionBox["1", "2"], 
+           RowBox[{"newm", ".", "chargeVector"}]}]}]}], ";", 
+        StyleBox["\[IndentingNewLine]",
+         FontWeight->"Bold"], 
+        StyleBox[
+         RowBox[{"(*", 
+          RowBox[{"Calculates", " ", "the", " ", "potential"}], "*)"}],
+         FontWeight->"Bold"], 
+        StyleBox["\[IndentingNewLine]",
+         FontWeight->"Bold"], 
+        StyleBox[
+         RowBox[{"potential", " ", "=", " ", 
+          RowBox[{"LinearSolve", "[", 
+           RowBox[{"m", ",", "chargeVector"}], "]"}]}],
+         FontWeight->"Bold"], 
+        StyleBox[";",
+         FontWeight->"Bold"], 
+        StyleBox["\[IndentingNewLine]",
+         FontWeight->"Bold"], "\[IndentingNewLine]", 
+        RowBox[{
+         StyleBox["halfSpaceVoltage",
+          FontWeight->"Bold"], 
+         StyleBox["=",
+          FontWeight->"Bold"], 
+         RowBox[{
+          StyleBox["Flatten",
+           FontWeight->"Bold"], 
+          StyleBox["[",
+           FontWeight->"Bold"], 
+          RowBox[{
+           RowBox[{
+            StyleBox["Table",
+             FontWeight->"Bold"], 
+            StyleBox["[",
+             FontWeight->"Bold"], 
+            StyleBox["\[IndentingNewLine]",
+             FontWeight->"Bold"], 
+            RowBox[{
+             RowBox[{
+              StyleBox["{",
+               FontWeight->"Bold"], 
+              RowBox[{
+               StyleBox["i",
+                FontWeight->"Bold"], 
+               StyleBox[",",
+                FontWeight->"Bold"], 
+               RowBox[{
+                RowBox[{"Floor", "[", 
+                 FractionBox[
+                  StyleBox[
+                   RowBox[{"MM", "+", "1"}],
+                   FontWeight->"Bold"], "2"], "]"}], "-", 
+                StyleBox["j",
+                 FontWeight->"Bold"], 
+                StyleBox["+",
+                 FontWeight->"Bold"], 
+                StyleBox["1",
+                 FontWeight->"Bold"]}], 
+               StyleBox[",",
+                FontWeight->"Bold"], 
+               RowBox[{"potential", "[", 
+                RowBox[{"[", 
+                 RowBox[{"j", " ", "+", " ", 
+                  RowBox[{
+                   RowBox[{"(", 
+                    RowBox[{"MM", "-", "1"}], ")"}], 
+                   RowBox[{"(", 
+                    RowBox[{"i", "-", "1"}], ")"}]}]}], "]"}], "]"}]}], 
+              StyleBox["}",
+               FontWeight->"Bold"]}], 
+             StyleBox[",",
+              FontWeight->"Bold"], 
+             StyleBox["\[IndentingNewLine]",
+              FontWeight->"Bold"], 
+             StyleBox[
+              RowBox[{"{", 
+               RowBox[{"i", ",", "1", ",", "NN"}], "}"}],
+              FontWeight->"Bold"], 
+             StyleBox[",",
+              FontWeight->"Bold"], 
+             StyleBox["\[IndentingNewLine]",
+              FontWeight->"Bold"], 
+             RowBox[{
+              StyleBox["{",
+               FontWeight->"Bold"], 
+              RowBox[{
+               StyleBox["j",
+                FontWeight->"Bold"], 
+               StyleBox[",",
+                FontWeight->"Bold"], 
+               RowBox[{"Floor", "[", 
+                FractionBox[
+                 StyleBox[
+                  RowBox[{"MM", "+", "1"}],
+                  FontWeight->"Bold"], "2"], "]"}], ",", "1", ",", 
+               RowBox[{"-", "1"}]}], 
+              StyleBox["}",
+               FontWeight->"Bold"]}]}], 
+            StyleBox["\[IndentingNewLine]",
+             FontWeight->"Bold"], 
+            StyleBox["]",
+             FontWeight->"Bold"]}], 
+           StyleBox[",",
+            FontWeight->"Bold"], 
+           StyleBox["1",
+            FontWeight->"Bold"]}], 
+          StyleBox["]",
+           FontWeight->"Bold"]}]}], 
+        StyleBox[";",
+         FontWeight->"Bold"], 
+        StyleBox["\[IndentingNewLine]",
+         FontWeight->"Bold"], 
+        RowBox[{
+         StyleBox["halfSpaceList",
+          FontWeight->"Bold"], "=", 
+         RowBox[{
+          RowBox[{"Table", "[", "\[IndentingNewLine]", 
+           RowBox[{
+            RowBox[{
+             StyleBox[
+              RowBox[{"halfSpaceVoltage", "[", 
+               RowBox[{"[", 
+                RowBox[{"All", ",", "3"}], "]"}], "]"}],
+              FontWeight->"Bold"], "[", 
+             RowBox[{"[", "j", "]"}], "]"}], ",", "\[IndentingNewLine]", 
+            RowBox[{"{", 
+             RowBox[{"j", ",", "1", ",", 
+              RowBox[{
+               StyleBox[
+                RowBox[{"halfSpaceVoltage", "[", 
+                 RowBox[{"[", 
+                  RowBox[{"All", ",", "3"}], "]"}], "]"}],
+                FontWeight->"Bold"], 
+               StyleBox["//",
+                FontWeight->"Bold"], "Length"}]}], "}"}], ",", 
+            "\[IndentingNewLine]", 
+            RowBox[{"{", 
+             RowBox[{"i", ",", "1", ",", "3"}], "}"}]}], 
+           "\[IndentingNewLine]", "]"}], "//", "Flatten"}]}], ";", 
+        "\[IndentingNewLine]", "\[IndentingNewLine]", 
+        RowBox[{"voltageMatrix", "=", 
+         RowBox[{"DiagonalMatrix", "[", 
+          StyleBox["halfSpaceList",
+           FontWeight->"Bold"], "]"}]}], ";", "\[IndentingNewLine]", 
+        RowBox[{"tx", " ", "=", " ", 
+         RowBox[{"DiagonalMatrix", "[", 
+          RowBox[{
+           RowBox[{"{", 
+            RowBox[{"t2", ",", "t1", ",", "t1"}], "}"}], ",", "0"}], "]"}]}], 
+        ";", "\[IndentingNewLine]", 
+        RowBox[{"ty", " ", "=", " ", 
+         RowBox[{"DiagonalMatrix", "[", 
+          RowBox[{
+           RowBox[{"{", 
+            RowBox[{"t1", ",", "t2", ",", "t1"}], "}"}], ",", "0"}], "]"}]}], 
+        ";", "\[IndentingNewLine]", "\[IndentingNewLine]", 
+        RowBox[{"(*", 
+         RowBox[{
+          RowBox[{
+          "These", " ", "4", " ", "matrices", " ", "are", " ", "interatomic", 
+           " ", "bonding", " ", "in", " ", "each", " ", "of", " ", "the", " ",
+            "4", " ", "directions", " ", "in", " ", "the", " ", "x"}], "-", 
+          RowBox[{"y", " ", "plane"}]}], "*)"}], "\[IndentingNewLine]", 
+        RowBox[{"m2", " ", "=", " ", 
+         RowBox[{"KroneckerProduct", "[", 
+          RowBox[{
+           RowBox[{"DiagonalMatrix", "[", 
+            RowBox[{
+             RowBox[{"Table", "[", 
+              RowBox[{"1", ",", 
+               RowBox[{"{", 
+                RowBox[{
+                 RowBox[{"nn", "*", "mm"}], "-", "1"}], "}"}]}], "]"}], ",", 
+             "1"}], "]"}], ",", "ty"}], "]"}]}], ";", "\[IndentingNewLine]", 
+        RowBox[{"m3", " ", "=", " ", 
+         RowBox[{"KroneckerProduct", "[", 
+          RowBox[{
+           RowBox[{"DiagonalMatrix", "[", 
+            RowBox[{
+             RowBox[{"Table", "[", 
+              RowBox[{"1", ",", 
+               RowBox[{"{", 
+                RowBox[{
+                 RowBox[{"nn", "*", "mm"}], "-", "1"}], "}"}]}], "]"}], ",", 
+             RowBox[{"-", "1"}]}], "]"}], ",", "ty"}], "]"}]}], ";", 
+        "\[IndentingNewLine]", 
+        RowBox[{"m4", " ", "=", " ", 
+         RowBox[{"KroneckerProduct", "[", 
+          RowBox[{
+           RowBox[{"DiagonalMatrix", "[", 
+            RowBox[{
+             RowBox[{"Table", "[", 
+              RowBox[{"1", ",", 
+               RowBox[{"{", 
+                RowBox[{
+                 RowBox[{"nn", "*", "mm"}], "-", "mm"}], "}"}]}], "]"}], ",", 
+             "mm"}], "]"}], ",", "tx"}], "]"}]}], ";", "\[IndentingNewLine]", 
+        RowBox[{"m5", " ", "=", " ", 
+         RowBox[{"KroneckerProduct", "[", 
+          RowBox[{
+           RowBox[{"DiagonalMatrix", "[", 
+            RowBox[{
+             RowBox[{"Table", "[", 
+              RowBox[{"1", ",", 
+               RowBox[{"{", 
+                RowBox[{
+                 RowBox[{"nn", "*", "mm"}], "-", "mm"}], "}"}]}], "]"}], ",", 
+             RowBox[{"-", "mm"}]}], "]"}], ",", "tx"}], "]"}]}], ";", 
+        "\[IndentingNewLine]", 
+        RowBox[{"{", 
+         RowBox[{
+          RowBox[{
+          "m2", "+", "m3", "+", "m4", "+", "m5", "+", "voltageMatrix"}], ",", 
+          "totalCharge"}], "}"}]}]}], "\[IndentingNewLine]", "]"}]}], ";"}], 
+   "\[IndentingNewLine]", "\[IndentingNewLine]", 
+   RowBox[{"(*", 
+    RowBox[{
+     RowBox[{"End", "[", "]"}], "\[IndentingNewLine]", "\n", 
+     RowBox[{"EndPackage", "[", "]"}]}], "*)"}]}]}]], "Input",
+ CellChangeTimes->{
+  3.649685394730507*^9, {3.649685438655899*^9, 3.6496855000920424`*^9}, {
+   3.6496855743334656`*^9, 3.6496856858126125`*^9}, {3.6496857202660575`*^9, 
+   3.6496857222792587`*^9}, {3.6496858415591855`*^9, 
+   3.6496862044374695`*^9}, {3.649686255857611*^9, 3.6496862581218376`*^9}, {
+   3.649686288927918*^9, 3.6496863095679817`*^9}, {3.649687003038322*^9, 
+   3.649687044103428*^9}, {3.649687508092822*^9, 3.6496875098740005`*^9}, {
+   3.6496876731693287`*^9, 3.6496876744594574`*^9}, {3.6496926465816197`*^9, 
+   3.6496926468086424`*^9}, {3.649692700628024*^9, 3.6496927193648977`*^9}, {
+   3.649757527998268*^9, 3.6497575311665845`*^9}, {3.649767556292997*^9, 
+   3.6497675855729246`*^9}, {3.6497676580451713`*^9, 3.6497676904324093`*^9}, 
+   3.649768643802737*^9, 3.6497701697173133`*^9, {3.649770203513693*^9, 
+   3.6497702286112022`*^9}, {3.6497721197823005`*^9, 3.64977215148247*^9}, {
+   3.649772194565778*^9, 3.649772209769298*^9}, {3.649772450772396*^9, 
+   3.649772496371956*^9}, {3.6497727763469505`*^9, 3.649772784504766*^9}, {
+   3.649773227129024*^9, 3.649773243901701*^9}, {3.6500379121455326`*^9, 
+   3.650037914455602*^9}, {3.65012620158245*^9, 3.6501262037352915`*^9}}],
+
+Cell[BoxData[""], "Input",
+ CellChangeTimes->{{3.6497677283261986`*^9, 3.6497677546578317`*^9}, {
+   3.6497678703503995`*^9, 3.6497679652978935`*^9}, {3.649768004735837*^9, 
+   3.6497680121715803`*^9}, {3.6497680427976427`*^9, 
+   3.6497680617165346`*^9}, {3.64976832069843*^9, 3.6497683405704165`*^9}, {
+   3.6497684194233017`*^9, 3.64976849031539*^9}, 3.6497685533666945`*^9, {
+   3.6497686155739145`*^9, 3.6497686162009773`*^9}, 3.649769318831233*^9, {
+   3.649769646186966*^9, 3.6497696512944765`*^9}, 3.6497721167639985`*^9}]
+},
+WindowSize->{624, 946},
+WindowMargins->{{0, Automatic}, {0, Automatic}},
+FrontEndVersion->"9.0 for Microsoft Windows (64-bit) (January 25, 2013)",
+StyleDefinitions->"Default.nb"
+]
+(* End of Notebook Content *)
+
+(* Internal cache information *)
+(*CellTagsOutline
+CellTagsIndex->{}
+*)
+(*CellTagsIndex
+CellTagsIndex->{}
+*)
+(*NotebookFileOutline
+Notebook[{
+Cell[557, 20, 55041, 1476, 4745, "Input"],
+Cell[55601, 1498, 530, 7, 31, "Input"]
+}
+]
+*)
+
+(* End of internal cache information *)

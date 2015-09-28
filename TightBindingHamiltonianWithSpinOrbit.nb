@@ -1,0 +1,440 @@
+(* Content-type: application/vnd.wolfram.mathematica *)
+
+(*** Wolfram Notebook File ***)
+(* http://www.wolfram.com/nb *)
+
+(* CreatedBy='Mathematica 9.0' *)
+
+(*CacheID: 234*)
+(* Internal cache information:
+NotebookFileLineBreakTest
+NotebookFileLineBreakTest
+NotebookDataPosition[       157,          7]
+NotebookDataLength[     15791,        431]
+NotebookOptionsPosition[     15470,        415]
+NotebookOutlinePosition[     15812,        430]
+CellTagsIndexPosition[     15769,        427]
+WindowFrame->Normal*)
+
+(* Beginning of Notebook Content *)
+Notebook[{
+
+Cell[CellGroupData[{
+Cell[BoxData[{
+ RowBox[{
+  RowBox[{"Clear", "[", 
+   RowBox[{
+   "Eyz", ",", "Ezx", ",", "Exy", ",", "so", ",", "t1", ",", "t2", ",", 
+    "E0yz", ",", "E0zx", ",", "E0xy", ",", "somatrix", ",", "kx", ",", "ky", 
+    ",", "kz"}], "]"}], "\[IndentingNewLine]", "\[IndentingNewLine]", 
+  RowBox[{"(*", 
+   RowBox[{
+   "TODO", " ", "get", " ", "constants", " ", "from", " ", "global", " ", 
+    "parmeter", " ", "file"}], "*)"}]}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"NN", "=", "5"}], ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{
+   RowBox[{"MM", "=", "NN"}], ";"}], 
+  "\[IndentingNewLine]"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"t1", "=", "100."}], ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{
+   RowBox[{"t2", "=", "10"}], ";"}], 
+  "\[IndentingNewLine]"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{
+   RowBox[{"ky", "=", "0"}], ";"}], "\[IndentingNewLine]", 
+  "\[IndentingNewLine]", 
+  RowBox[{"(*", 
+   RowBox[{
+    RowBox[{"so", "=", "20"}], ";"}], "*)"}], "\[IndentingNewLine]", 
+  "\[IndentingNewLine]", 
+  StyleBox[
+   RowBox[{"(*", 
+    RowBox[{
+    "constructing", " ", "Hamiltonian", " ", "for", " ", "every", " ", "mesh",
+      " ", "point"}], "*)"}], "Code"]}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"so", " ", "=", " ", "1"}], ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"Eyz", " ", "=", " ", 
+   RowBox[{
+    RowBox[{"2", "t1"}], " ", "-", 
+    RowBox[{"2", " ", "t1", " ", 
+     RowBox[{"Cos", "[", "ky", "]"}]}]}]}], ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"Ezx", " ", "=", " ", 
+   RowBox[{
+    RowBox[{"2", "t2"}], " ", "-", 
+    RowBox[{"2", " ", "t2", " ", 
+     RowBox[{"Cos", "[", "ky", "]"}]}]}]}], ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"Exy", " ", "=", " ", 
+   RowBox[{
+    RowBox[{"2", "t1"}], " ", "-", 
+    RowBox[{"2", " ", "t1", " ", 
+     RowBox[{"Cos", "[", "ky", "]"}]}]}]}], ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"somatrix", " ", "=", " ", 
+   RowBox[{
+    FractionBox["so", "3"], 
+    RowBox[{"(", "\[NoBreak]", GridBox[{
+       {"1", "\[ImaginaryI]", "0", "0", "0", 
+        RowBox[{"-", "1"}]},
+       {
+        RowBox[{"-", "\[ImaginaryI]"}], "1", "0", "0", "0", "\[ImaginaryI]"},
+       {"0", "0", "1", "1", 
+        RowBox[{"-", "\[ImaginaryI]"}], "0"},
+       {"0", "0", "1", "1", 
+        RowBox[{"-", "\[ImaginaryI]"}], "0"},
+       {"0", "0", "\[ImaginaryI]", "\[ImaginaryI]", "1", "0"},
+       {
+        RowBox[{"-", "1"}], 
+        RowBox[{"-", "\[ImaginaryI]"}], "0", "0", "0", "1"}
+      },
+      GridBoxAlignment->{
+       "Columns" -> {{Center}}, "ColumnsIndexed" -> {}, 
+        "Rows" -> {{Baseline}}, "RowsIndexed" -> {}},
+      GridBoxSpacings->{"Columns" -> {
+          Offset[0.27999999999999997`], {
+           Offset[0.7]}, 
+          Offset[0.27999999999999997`]}, "ColumnsIndexed" -> {}, "Rows" -> {
+          Offset[0.2], {
+           Offset[0.4]}, 
+          Offset[0.2]}, "RowsIndexed" -> {}}], "\[NoBreak]", ")"}]}]}], 
+  ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"hamiltonian", "  ", "=", " ", 
+   RowBox[{"DiagonalMatrix", "[", 
+    RowBox[{
+     RowBox[{"{", 
+      RowBox[{"Eyz", ",", "Ezx", ",", "Exy"}], "}"}], ",", "0"}], "]"}]}], 
+  ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"hamiltonian", " ", "=", " ", 
+   RowBox[{
+    RowBox[{"KroneckerProduct", "[", 
+     RowBox[{
+      RowBox[{"IdentityMatrix", "[", "2", "]"}], ",", "hamiltonian"}], "]"}], 
+    "+", "somatrix"}]}], ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{
+   RowBox[{"hamiltonian", "//", "MatrixForm"}], ";"}], 
+  "\[IndentingNewLine]"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"Clear", "[", 
+   RowBox[{"tx", ",", "tz"}], "]"}], "\[IndentingNewLine]", 
+  StyleBox[
+   RowBox[{"(*", 
+    RowBox[{
+     RowBox[{"constructing", " ", "tx", " ", "and", " ", "tz"}], ",", " ", 
+     RowBox[{
+     "the", " ", "matrices", " ", "governing", " ", "bonding", " ", "between",
+       " ", "adjacent", " ", "atoms", " ", "in", " ", "the", " ", "x"}], ",", 
+     " ", "y", ",", " ", 
+     RowBox[{"and", " ", "z", " ", "directions"}]}], "*)"}], "Code"], "\n", 
+  RowBox[{"(*", 
+   RowBox[{
+    RowBox[{"Each", " ", "matrix", " ", "should", " ", "be", " ", "6", "x6"}],
+     ",", " ", 
+    RowBox[{"just", " ", "like", " ", "each", " ", 
+     RowBox[{"particle", "'"}], "s", " ", "Hamiltonian"}]}], 
+   "*)"}]}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"tx", " ", "=", " ", 
+   RowBox[{"KroneckerProduct", "[", 
+    RowBox[{
+     RowBox[{"IdentityMatrix", "[", "2", "]"}], ",", 
+     RowBox[{"DiagonalMatrix", "[", 
+      RowBox[{
+       RowBox[{"{", 
+        RowBox[{"t2", ",", "t1", ",", "t1"}], "}"}], ",", "0"}], "]"}]}], 
+    "]"}]}], ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"tz", " ", "=", " ", 
+   RowBox[{"KroneckerProduct", "[", 
+    RowBox[{
+     RowBox[{"IdentityMatrix", "[", "2", "]"}], ",", 
+     RowBox[{"DiagonalMatrix", "[", 
+      RowBox[{
+       RowBox[{"{", 
+        RowBox[{"t1", ",", "t1", ",", "t2"}], "}"}], ",", "0"}], "]"}]}], 
+    "]"}]}], ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"tx", "//", "MatrixForm"}], ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{
+   RowBox[{"tz", "//", "MatrixForm"}], ";"}], 
+  "\[IndentingNewLine]"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"Clear", "[", 
+   RowBox[{"m1", ",", "m2", ",", "m3", ",", "m4", ",", "m5"}], "]"}], 
+  "\[IndentingNewLine]", "\[IndentingNewLine]", 
+  RowBox[{"(*", 
+   RowBox[{"Each", " ", 
+    RowBox[{"particle", "'"}], "s", " ", "Hamiltonian", " ", "goes", " ", 
+    "on", " ", "the", " ", "main", " ", "diagonal"}], 
+   "*)"}]}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{
+   RowBox[{"m1", " ", "=", " ", 
+    RowBox[{"KroneckerProduct", "[", 
+     RowBox[{
+      RowBox[{"IdentityMatrix", "[", 
+       RowBox[{"NN", "*", "MM"}], "]"}], ",", "hamiltonian"}], "]"}]}], ";"}],
+   "\[IndentingNewLine]", "\[IndentingNewLine]", 
+  RowBox[{"(*", 
+   RowBox[{
+    RowBox[{
+    "These", " ", "4", " ", "matrices", " ", "are", " ", "interatomic", " ", 
+     "bonding", " ", "in", " ", "each", " ", "of", " ", "the", " ", "4", " ", 
+     "directions", " ", "in", " ", "the", " ", "x"}], "-", 
+    RowBox[{"y", " ", "plane"}]}], "*)"}]}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"m2", " ", "=", " ", 
+   RowBox[{"KroneckerProduct", "[", 
+    RowBox[{
+     RowBox[{"DiagonalMatrix", "[", 
+      RowBox[{
+       RowBox[{"Table", "[", 
+        RowBox[{"1", ",", 
+         RowBox[{"{", 
+          RowBox[{
+           RowBox[{"NN", "*", "MM"}], "-", "1"}], "}"}]}], "]"}], ",", "1"}], 
+      "]"}], ",", "tx"}], "]"}]}], ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"m3", " ", "=", " ", 
+   RowBox[{"KroneckerProduct", "[", 
+    RowBox[{
+     RowBox[{"DiagonalMatrix", "[", 
+      RowBox[{
+       RowBox[{"Table", "[", 
+        RowBox[{"1", ",", 
+         RowBox[{"{", 
+          RowBox[{
+           RowBox[{"NN", "*", "MM"}], "-", "1"}], "}"}]}], "]"}], ",", 
+       RowBox[{"-", "1"}]}], "]"}], ",", "tx"}], "]"}]}], 
+  ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"m4", " ", "=", " ", 
+   RowBox[{"KroneckerProduct", "[", 
+    RowBox[{
+     RowBox[{"DiagonalMatrix", "[", 
+      RowBox[{
+       RowBox[{"Table", "[", 
+        RowBox[{"1", ",", 
+         RowBox[{"{", 
+          RowBox[{
+           RowBox[{"NN", "*", "MM"}], "-", "NN"}], "}"}]}], "]"}], ",", 
+       "NN"}], "]"}], ",", "tz"}], "]"}]}], ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{
+   RowBox[{"m5", " ", "=", " ", 
+    RowBox[{"KroneckerProduct", "[", 
+     RowBox[{
+      RowBox[{"DiagonalMatrix", "[", 
+       RowBox[{
+        RowBox[{"Table", "[", 
+         RowBox[{"1", ",", 
+          RowBox[{"{", 
+           RowBox[{
+            RowBox[{"NN", "*", "MM"}], "-", "NN"}], "}"}]}], "]"}], ",", 
+        RowBox[{"-", "NN"}]}], "]"}], ",", "tz"}], "]"}]}], ";"}], 
+  "\[IndentingNewLine]"}], "\[IndentingNewLine]", 
+ RowBox[{"matrix", " ", "=", " ", 
+  RowBox[{
+   RowBox[{"m1", "+", "m2", "+", "m3", "+", "m4", "+", "m5"}], "//", 
+   "MatrixForm"}]}], "\[IndentingNewLine]"}], "Input",
+ CellChangeTimes->{{3.6411395941425395`*^9, 3.6411397534673824`*^9}, {
+   3.6411398586595306`*^9, 3.6411398668964367`*^9}, {3.6411399373669577`*^9, 
+   3.641140137314721*^9}, {3.641140167579109*^9, 3.6411403172952285`*^9}, {
+   3.6411403727539396`*^9, 3.641140376139183*^9}, {3.6411404255606165`*^9, 
+   3.641140433079913*^9}, 3.6411404796777105`*^9, {3.6411405288495407`*^9, 
+   3.641140529099144*^9}, {3.6411407311217337`*^9, 3.6411407738974824`*^9}, {
+   3.6411408172504377`*^9, 3.6411408461264086`*^9}, {3.641140893161011*^9, 
+   3.641141117602089*^9}, {3.6411411510957184`*^9, 3.64114124560173*^9}, {
+   3.641141307394122*^9, 3.6411413521978965`*^9}, {3.641141515329188*^9, 
+   3.641141552722867*^9}, {3.6411417056516275`*^9, 3.641141790298313*^9}, {
+   3.6411421105088453`*^9, 3.641142161622944*^9}, {3.6411421982522135`*^9, 
+   3.641142258344184*^9}, {3.641142584475988*^9, 3.6411426197012396`*^9}, {
+   3.641142846184943*^9, 3.641142847323758*^9}, 3.641143405265911*^9, 
+   3.641143528881896*^9, {3.6411436095193295`*^9, 3.6411436327636275`*^9}, {
+   3.6411436628564134`*^9, 3.6411436673960714`*^9}, {3.641143749780728*^9, 
+   3.6411437527447658`*^9}, {3.6411437899512424`*^9, 
+   3.6411440174645596`*^9}, {3.6411440604431105`*^9, 
+   3.6411442972863474`*^9}, {3.641144366676037*^9, 3.64114437786138*^9}, {
+   3.641144420871132*^9, 3.641144421136335*^9}, {3.641144571259881*^9, 
+   3.6411445713690825`*^9}, {3.641144920039562*^9, 3.6411449453440866`*^9}, {
+   3.6411449930338984`*^9, 3.641145226761712*^9}, {3.6411455430089664`*^9, 
+   3.6411456026953316`*^9}, {3.641745212476375*^9, 3.641745216813314*^9}, {
+   3.6430265343086414`*^9, 3.6430265348096914`*^9}, {3.643026625413751*^9, 
+   3.6430266467468843`*^9}, {3.6431049513706703`*^9, 
+   3.6431049622167544`*^9}, {3.643105022075555*^9, 3.643105043869174*^9}, {
+   3.643105075802988*^9, 3.643105170200403*^9}, {3.649065165176735*^9, 
+   3.649065170648282*^9}, {3.6490652011833353`*^9, 3.649065280817298*^9}, 
+   3.649065323902606*^9, {3.649091357293746*^9, 3.6490913667216887`*^9}}],
+
+Cell[BoxData[
+ InterpretationBox[
+  TagBox[
+   PanelBox[GridBox[{
+      {
+       StyleBox[
+        StyleBox[
+         DynamicBox[ToBoxes[
+           FEPrivate`FrontEndResource["FEStrings", "sizeExplanation"], 
+           StandardForm],
+          ImageSizeCache->{299., {3., 9.}}],
+         StripOnInput->False,
+         DynamicUpdating->True], "Panel",
+        StripOnInput->False,
+        Background->None]},
+      {
+       ItemBox[
+        TagBox[
+         TagBox[
+          RowBox[{"(", "\[NoBreak]", 
+           RowBox[{"\[LeftSkeleton]", "1", "\[RightSkeleton]"}], "\[NoBreak]",
+            ")"}],
+          Function[BoxForm`e$, 
+           MatrixForm[BoxForm`e$]]],
+         Short[#, 5]& ],
+        Background->GrayLevel[1],
+        BaseStyle->{Deployed -> False},
+        Frame->True,
+        FrameStyle->GrayLevel[0, 0.2],
+        StripOnInput->False]},
+      {
+       RowBox[{
+        ButtonBox[
+         StyleBox[
+          StyleBox[
+           DynamicBox[ToBoxes[
+             FEPrivate`FrontEndResource["FEStrings", "sizeShowLess"], 
+             StandardForm],
+            ImageSizeCache->{54., {1., 9.}}],
+           StripOnInput->False,
+           DynamicUpdating->True], "Panel",
+          StripOnInput->False,
+          Background->None],
+         Appearance->Automatic,
+         ButtonFunction:>OutputSizeLimit`ButtonFunction[
+           Function[{OutputSizeLimit`Dump`x$}, 
+            MatrixForm[OutputSizeLimit`Dump`x$]], 859, 24938998128763248381, 
+           5/2],
+         Enabled->True,
+         Evaluator->Automatic,
+         Method->"Queued"], "\[ThinSpace]", 
+        ButtonBox[
+         StyleBox[
+          StyleBox[
+           DynamicBox[ToBoxes[
+             FEPrivate`FrontEndResource["FEStrings", "sizeShowMore"], 
+             StandardForm],
+            ImageSizeCache->{60., {1., 9.}}],
+           StripOnInput->False,
+           DynamicUpdating->True], "Panel",
+          StripOnInput->False,
+          Background->None],
+         Appearance->Automatic,
+         ButtonFunction:>OutputSizeLimit`ButtonFunction[
+           Function[{OutputSizeLimit`Dump`x$}, 
+            MatrixForm[OutputSizeLimit`Dump`x$]], 859, 24938998128763248381, 
+           5 2],
+         Enabled->True,
+         Evaluator->Automatic,
+         Method->"Queued"], "\[ThinSpace]", 
+        ButtonBox[
+         StyleBox[
+          StyleBox[
+           DynamicBox[ToBoxes[
+             FEPrivate`FrontEndResource["FEStrings", "sizeShowAll"], 
+             StandardForm],
+            ImageSizeCache->{92., {3., 9.}}],
+           StripOnInput->False,
+           DynamicUpdating->True], "Panel",
+          StripOnInput->False,
+          Background->None],
+         Appearance->Automatic,
+         ButtonFunction:>OutputSizeLimit`ButtonFunction[
+           Function[{OutputSizeLimit`Dump`x$}, 
+            MatrixForm[OutputSizeLimit`Dump`x$]], 859, 24938998128763248381, 
+           Infinity],
+         Enabled->True,
+         Evaluator->Automatic,
+         Method->"Queued"], "\[ThinSpace]", 
+        ButtonBox[
+         StyleBox[
+          StyleBox[
+           DynamicBox[ToBoxes[
+             FEPrivate`FrontEndResource["FEStrings", "sizeChangeLimit"], 
+             StandardForm],
+            ImageSizeCache->{78., {1., 9.}}],
+           StripOnInput->False,
+           DynamicUpdating->True], "Panel",
+          StripOnInput->False,
+          Background->None],
+         Appearance->Automatic,
+         ButtonFunction:>FrontEndExecute[{
+            FrontEnd`SetOptions[
+            FrontEnd`$FrontEnd, 
+             FrontEnd`PreferencesSettings -> {"Page" -> "Evaluation"}], 
+            FrontEnd`FrontEndToken["PreferencesDialog"]}],
+         Evaluator->None,
+         Method->"Preemptive"]}]}
+     },
+     DefaultBaseStyle->"Column",
+     GridBoxAlignment->{
+      "Columns" -> {{Left}}, "ColumnsIndexed" -> {}, "Rows" -> {{Baseline}}, 
+       "RowsIndexed" -> {}},
+     GridBoxDividers->{
+      "Columns" -> {{False}}, "ColumnsIndexed" -> {}, "Rows" -> {{False}}, 
+       "RowsIndexed" -> {}},
+     GridBoxItemSize->{
+      "Columns" -> {{Automatic}}, "ColumnsIndexed" -> {}, "Rows" -> {{1.}}, 
+       "RowsIndexed" -> {}},
+     GridBoxSpacings->{"Columns" -> {
+         Offset[0.27999999999999997`], {
+          Offset[0.5599999999999999]}, 
+         Offset[0.27999999999999997`]}, "ColumnsIndexed" -> {}, "Rows" -> {
+         Offset[0.2], {
+          Offset[1.2]}, 
+         Offset[0.2]}, "RowsIndexed" -> {}}],
+    DefaultBaseStyle->{},
+    FrameMargins->5],
+   Deploy,
+   DefaultBaseStyle->"Deploy"],
+  Out[859]]], "Output",
+ CellChangeTimes->{{3.643026627122922*^9, 3.643026647956005*^9}, {
+  3.649065163238541*^9, 3.64906517112633*^9}, {3.6490652066628833`*^9, 
+  3.649065278019018*^9}, {3.6490653179000053`*^9, 3.649065324434659*^9}, {
+  3.6490913514831653`*^9, 3.6490913679348097`*^9}}]
+}, Open  ]]
+},
+WindowSize->{624, 946},
+WindowMargins->{{Automatic, 0}, {0, Automatic}},
+FrontEndVersion->"9.0 for Microsoft Windows (64-bit) (January 25, 2013)",
+StyleDefinitions->"Default.nb"
+]
+(* End of Notebook Content *)
+
+(* Internal cache information *)
+(*CellTagsOutline
+CellTagsIndex->{}
+*)
+(*CellTagsIndex
+CellTagsIndex->{}
+*)
+(*NotebookFileOutline
+Notebook[{
+Cell[CellGroupData[{
+Cell[579, 22, 10068, 254, 1227, "Input"],
+Cell[10650, 278, 4804, 134, 186, "Output"]
+}, Open  ]]
+}
+]
+*)
+
+(* End of internal cache information *)

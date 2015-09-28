@@ -1,0 +1,89 @@
+(* Content-type: application/vnd.wolfram.mathematica *)
+
+(*** Wolfram Notebook File ***)
+(* http://www.wolfram.com/nb *)
+
+(* CreatedBy='Mathematica 9.0' *)
+
+(*CacheID: 234*)
+(* Internal cache information:
+NotebookFileLineBreakTest
+NotebookFileLineBreakTest
+NotebookDataPosition[       157,          7]
+NotebookDataLength[      2670,         80]
+NotebookOptionsPosition[      2429,         67]
+NotebookOutlinePosition[      2771,         82]
+CellTagsIndexPosition[      2728,         79]
+WindowFrame->Normal*)
+
+(* Beginning of Notebook Content *)
+Notebook[{
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"(*", 
+   RowBox[{
+   "File", " ", "with", " ", "all", " ", "necessary", " ", "parameters", " ", 
+    "to", " ", "run", " ", "rest", " ", "of", " ", "code"}], "*)"}], 
+  "\[IndentingNewLine]", "\[IndentingNewLine]", "\[IndentingNewLine]", 
+  RowBox[{"(*", 
+   RowBox[{
+   "Number", " ", "of", " ", "grid", " ", "points", " ", "in", " ", "each", 
+    " ", "direction"}], "*)"}], "\[IndentingNewLine]", 
+  RowBox[{
+   RowBox[{"Clear", "[", 
+    RowBox[{
+    "NN", ",", "MM", ",", "t1", ",", "t2", ",", "a", ",", "\[Lambda]", ",", 
+     "so", ",", "height"}], "]"}], "\[IndentingNewLine]", 
+   "\[IndentingNewLine]", 
+   RowBox[{
+    RowBox[{"NN", "=", "10"}], ";"}], "\[IndentingNewLine]", 
+   RowBox[{
+    RowBox[{"MM", "=", "10"}], ";"}], "\[IndentingNewLine]", 
+   "\[IndentingNewLine]", 
+   RowBox[{
+    RowBox[{"t1", "=", ".25"}], ";"}], "\[IndentingNewLine]", 
+   RowBox[{
+    RowBox[{"t2", "=", ".025"}], ";"}], "\[IndentingNewLine]", 
+   RowBox[{
+    RowBox[{"a", "=", "3.904"}], ";"}], 
+   RowBox[{"(*", 
+    RowBox[{"what", " ", "a", " ", "is", " ", 
+     RowBox[{"this", "?"}]}], "*)"}], "\[IndentingNewLine]", 
+   RowBox[{
+    RowBox[{"\[Lambda]", "=", "10"}], ";"}], "\[IndentingNewLine]", 
+   RowBox[{
+    RowBox[{"so", " ", "="}], " ", ";"}], "\[IndentingNewLine]", 
+   RowBox[{
+    RowBox[{"height", "=", "12"}], ";", 
+    RowBox[{"(*", 
+     RowBox[{"LAO", " ", "thickness"}], "*)"}], "\[IndentingNewLine]", 
+    "\[IndentingNewLine]", "\[IndentingNewLine]"}]}]}]], "Input",
+ CellChangeTimes->{{3.643026258857785*^9, 3.643026309550161*^9}, {
+  3.6430264118673983`*^9, 3.6430264610383153`*^9}, {3.6431054543832703`*^9, 
+  3.643105471964808*^9}, {3.643105514444425*^9, 3.643105550637121*^9}, {
+  3.6490654685920734`*^9, 3.649065470166231*^9}, {3.649687956023611*^9, 
+  3.64968796541455*^9}},
+ EmphasizeSyntaxErrors->True]
+},
+WindowSize->{624, 946},
+WindowMargins->{{Automatic, 0}, {0, Automatic}},
+FrontEndVersion->"9.0 for Microsoft Windows (64-bit) (January 25, 2013)",
+StyleDefinitions->"Default.nb"
+]
+(* End of Notebook Content *)
+
+(* Internal cache information *)
+(*CellTagsOutline
+CellTagsIndex->{}
+*)
+(*CellTagsIndex
+CellTagsIndex->{}
+*)
+(*NotebookFileOutline
+Notebook[{
+Cell[557, 20, 1868, 45, 372, "Input"]
+}
+]
+*)
+
+(* End of internal cache information *)
