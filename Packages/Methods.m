@@ -39,6 +39,7 @@ PoissonPlot::usage="PoissonPlot[chargeList_List] plots the solution to Poisson's
 eigensystem::usage="eigensystem[kz_] returns the eigensystem of the matrix operator for in the tight binding model in the form {{vals},{vecs},{degeneracies}}. This gives the eigenvalues of each atom for a particular value of crystal momentum, followed by the corresponding eigenvectors, followed by the corresponding degeneracies.";
 NecessaryStates::usage="NecessaryStates[numStatesTotal_] find the lowest energies with associated eigenvalues and eigenvectors that are necessary to fill the desired number of states, accounting for fractional filling. This is equivalent to a zero temperature Fermi calculation.";
 totalDensity::usage="totalDensity[n_] returns the density of the \!\(\*SuperscriptBox[\(n\), \(th\)]\) lowest eigenvalue as a list.";
+orbitalDensity::usage="orbitalDensity[n_,\[Alpha]_] returns the orbitally projected density of the \!\(\*SuperscriptBox[\(n\), \(th\)]\) lowest eigenvalue as a list. \[Alpha]=1 for yz, 2 for zx, 3 for xy.";
 totalOrbitallyProjectedDensity::usage="totalOrbitallyProjectedDensity[n_,\[Alpha]_] returns the density of the \!\(\*SuperscriptBox[\(n\), \(th\)]\) lowest eigenvalue due to a single orbital as a list. \[Alpha]=1 for yz, 2 for zx, 3 for xy.";
 totalDensityPlot::usage="totalDensityPlot[n_] plots the density of the \!\(\*SuperscriptBox[\(n\), \(th\)]\) lowest eigenvalue over the full space.";
 normalizedSumList::usage="normalizedSumList[numStatesTotal_] returns the charge distribution due to the lowest energies that fill the first numStatesTotal states, over the full space.";
@@ -59,6 +60,7 @@ listvals=Flatten[Table[
 ],1];
 baseMatrix=BaseMatrixTakesChargeList[listvals];
 {vals,vecs,degeneracies}=eigensystem[0];
+DistributeDefinitions["Methods`"];
 ];
 (*Poisson solver that implements the first part of the algorithm described below, solving over full space, including periodic edge - it represents the Laplacian as a matrix operator then inverts it. Any solution to Poisson's equation is now found by multiplying the inverse matrix by the (forcing function \[Rho]? idk if you can call it that)*)
 (*This is a symmetric finite difference method to solve the Poisson Equation*) 
@@ -228,9 +230,10 @@ Flatten[Table[
 {j,1,MM-1}
 ],1]
 ];
-totalDensity[n_]:=(orbitalDensity[n,1]+orbitalDensity[n,2]+orbitalDensity[n,3])[[All,3]];
-(*\[Alpha]=1 for yz, 2 for zx, 3 for xy*)
+
 totalOrbitallyProjectedDensity[n_,\[Alpha]_]:=orbitalDensity[n,\[Alpha]][[All,3]];
+totalDensity[n_]:=totalOrbitallyProjectedDensity[n,1]+totalOrbitallyProjectedDensity[n,2]+totalOrbitallyProjectedDensity[n,3];
+(*\[Alpha]=1 for yz, 2 for zx, 3 for xy*)
 totalDensityPlot[n_]:=
 PlotFullSpaceDistribution[totalDensity[n]];
 
