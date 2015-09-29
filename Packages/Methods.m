@@ -6,32 +6,35 @@ BeginPackage["Methods`"]
 \[Epsilon]2=5;
 H=12;(*Height of first layer in angstroms*)
 a= 3.904;(*unit cell size in angstroms*)
-\[Alpha]=.529/a;(*Subscript[a, 0]/a, where Subscript[a, 0] is the Bohr radius*)
-Ry=13.60569253;(*Rydberg unit of energy, in eV. 8\[Pi]Ry=e^2/(Subscript[a, 0]Subscript[\[Epsilon], 0]) in eV*)
-\[Lambda]=6.328312923598453`;(*electrons per unit cell*)
 t1=.25;(*hopping parameters in eV*)
 t2=.025;
-errorTrackingList={};
 
 MM=8;
 NN=4;
-vals={};
-vecs={};
-degeneracies={};
 \[Beta]=.95;(*percent of the old distribution to keep when calculating the new distribution*)
 numPartitions=20;
 numStates=50;
-densityToNumStatesScaling=(NN(MM-1)N[Pi]/numPartitions)^-1;
-\[Lambda] = ((\[Epsilon]2/\[Epsilon]1)(1/2 ArcTan[(MM a)/(2H)]-1/2 ArcTan[-((MM-2) a)/(2H)])NN (MM-1) 1/numPartitions)^-1 numStates;
 
+Ry=13.60569253;(*Rydberg unit of energy, in eV. 8\[Pi]Ry=e^2/(Subscript[a, 0]Subscript[\[Epsilon], 0]) in eV*)
+
+vals={};
+vecs={};
+degeneracies={};
+baseMatrix={};
 dk=N[Pi]/numPartitions;
 initShift=0;
 mm=Floor[(MM+1)/2];
-totalCharge= -(\[Epsilon]2/\[Epsilon]1)(\[Lambda]/N[\[Pi]])(1/2 ArcTan[(MM a)/(2H)]-1/2 ArcTan[-(((MM-2) a)/(2H))]);
-chargeDist[x_,y_]:=Sin[(\[Pi] y)/MM]Exp[-(2\[Pi] x)/MM];
-errorTolerance=.000000005;
 EFermi= 0;
-baseMatrix={};
+errorTrackingList={};
+
+\[Alpha]=.529/a;(*Subscript[a, 0]/a, where Subscript[a, 0] is the Bohr radius*)
+densityToNumStatesScaling=(NN(MM-1)N[Pi]/numPartitions)^-1;
+\[Lambda] = ((\[Epsilon]2/\[Epsilon]1)(1/2 ArcTan[(MM a)/(2H)]-1/2 ArcTan[-((MM-2) a)/(2H)])NN (MM-1) 1/numPartitions)^-1 numStates;
+totalCharge= -(\[Epsilon]2/\[Epsilon]1)(\[Lambda]/N[\[Pi]])(1/2 ArcTan[(MM a)/(2H)]-1/2 ArcTan[-(((MM-2) a)/(2H))]);
+
+chargeDist[x_,y_]:=Sin[(\[Pi] y)/MM]Exp[-(2\[Pi] x)/MM];
+
+
 
 TotalEnergySortedList::usage="TotalEnergySortedList[] returns {{vals}.{vecs},{degeneracies}} for every site over every available k value, sorted by order of increasing energy";
 PoissonSolver::usage="PoissonSolver[chargeList_List] returns the solution to Poisson's equation over a NNxMM grid when given the charge distribution at each point as a list.";
@@ -45,9 +48,12 @@ totalDensityPlot::usage="totalDensityPlot[n_] plots the density of the \!\(\*Sup
 normalizedSumList::usage="normalizedSumList[numStatesTotal_] returns the charge distribution due to the lowest energies that fill the first numStatesTotal states, over the full space.";
 normalizedProjectedSumList::usage="normalizedSumList[numStatesTotal_,\[Alpha]_] returns the orbitally projected charge distribution due to the lowest energies that fill the first numStatesTotal states, over the full space. \[Alpha]=1 for yz, 2 for zx, 3 for xy.";
 normalizedSumPlot::usage="normalizedSumPlot[numStatesTotal_] plots the charge distribution due to the lowest energies that fill the first numStatesTotal states, over the full space.";
-BandStructure::usage="BandStructure[minE_,maxE_] plots the band structure with an energy range from minE to maxE.";
+BandStructureList::usage="BandStructureList[listvals_] plots the band structure resulting from a charge distribution of listvals.";
+BandStructurePlot::usage="BandStructurePlot[minE_,maxE_,list_List] plots the band structure given a list of {k,\!\(\*SubscriptBox[\(E\), \(n\)]\)(k)} values, with an energy range from minE to maxE.";
 SelfConsistentDistribution::usage="SelfConsistentDistribution[firstGuess_,errorTolerance_] returns a self consistent charge distribution starting with firstGuess as the initial charge distribution and exits when successive iterations have a average sum squared differnece of less than errorTolerance.";
+PlotFullSpaceDistribution::usage="PlotFullSpaceDistribution[listvals_List] plots a graph of listvals over a NNx(MM-1) grid, missing the periodic edge.";
 Initialize::usage="Initialize[] initializes variables that are necessary for operation.";
+SetParameters::usage="SetParameters[new\[Epsilon]1_,new\[Epsilon]2_,newH_, newa_,  newt1_,newt2_, newMM_, newNN_, new\[Beta]_, newnumPartitions_, newnumStates_ ] set the new parameters based on the new inputsinput";
 
 
 Begin["Private`"]
@@ -62,6 +68,27 @@ baseMatrix=BaseMatrixTakesChargeList[listvals];
 {vals,vecs,degeneracies}=eigensystem[0];
 DistributeDefinitions["Methods`"];
 ];
+
+SetParameters[new\[Epsilon]1_,new\[Epsilon]2_,newH_, newa_,  newt1_,newt2_, newMM_, newNN_, new\[Beta]_, newnumPartitions_, newnumStates_ ]:=Module[{},
+\[Epsilon]1=new\[Epsilon]1;
+\[Epsilon]2=new\[Epsilon]2;
+H=newH;
+a=newa;
+t1=newt1;
+t2=newt2;
+MM=newMM;
+NN=newNN;
+\[Beta]=new\[Beta];
+numPartitions=newnumPartitions;
+numStates=newnumStates;
+densityToNumStatesScaling=(NN(MM-1)N[Pi]/numPartitions)^-1;
+\[Alpha]=.529/a;(*Subscript[a, 0]/a, where Subscript[a, 0] is the Bohr radius*)
+\[Lambda] = ((\[Epsilon]2/\[Epsilon]1)(1/2 ArcTan[(MM a)/(2H)]-1/2 ArcTan[-((MM-2) a)/(2H)])NN (MM-1) 1/numPartitions)^-1 numStates;
+totalCharge= -(\[Epsilon]2/\[Epsilon]1)(\[Lambda]/N[\[Pi]])(1/2 ArcTan[(MM a)/(2H)]-1/2 ArcTan[-(((MM-2) a)/(2H))]);
+mm=Floor[(MM+1)/2];
+totalCharge= -(\[Epsilon]2/\[Epsilon]1)(\[Lambda]/N[\[Pi]])(1/2 ArcTan[(MM a)/(2H)]-1/2 ArcTan[-(((MM-2) a)/(2H))]);
+]
+
 (*Poisson solver that implements the first part of the algorithm described below, solving over full space, including periodic edge - it represents the Laplacian as a matrix operator then inverts it. Any solution to Poisson's equation is now found by multiplying the inverse matrix by the (forcing function \[Rho]? idk if you can call it that)*)
 (*This is a symmetric finite difference method to solve the Poisson Equation*) 
 (*en.wikipedia.org/wiki/Discrete_Poisson_equation*)
@@ -245,35 +272,38 @@ normalizedSumList[numStatesTotal_]:=Module[{totalList},
 {vals,vecs,degeneracies}=NecessaryStates[numStatesTotal];
 densityToNumStatesScaling ParallelSum[degeneracies[[n]]totalDensity[n],{n,1,Length[vals]}]
 ];
+
 (*returns orbitally projected charge distribution*)
 normalizedProjectedSumList[numStatesTotal_,\[Alpha]_]:=Module[{totalList},
 {vals,vecs,degeneracies}=NecessaryStates[numStatesTotal];
 densityToNumStatesScaling ParallelSum[degeneracies[[n]]totalOrbitallyProjectedDensity[n,\[Alpha]],{n,1,Length[vals]}]
 ];
 
-normalizedSum[numStatesTotal_]:=normalizedSumList[numStatesTotal]//Total;
-
 normalizedSumPlot[numStatesTotal_]:=PlotFullSpaceDistribution[normalizedSumList[numStatesTotal]];
 
-BandStructure[minE_,maxE_]:=Module[{sys,plotList={},list2,length,FermiLine,f1,f2,shift},
+BandStructureList[chargeList_List]:=Module[{sys,plotList={},list2,length,FermiLine,f1,f2,shift=0},
+baseMatrix=BaseMatrixTakesChargeList[chargeList];
 SetSharedVariable[plotList];
 Do[
 sys=eigensystem[i dk][[1]];
 If[i==0,shift=sys[[1]]];
 length=sys//Length;
 AppendTo[plotList,Table[
-{i dk, sys[[j]]},
+{i dk, sys[[j]]-shift},
 {j,1,length}
 ]];
 ,{i,0,numPartitions}
 ];
 list2=Table[
- plotList[[i+1]][[j]]-shift,
+ plotList[[i+1]][[j]],
 {j,1,length},
 {i,0,numPartitions}
-];
+]
+]
+
+BandStructurePlot[minE_,maxE_,list_List]:=Module[{FermiLine,f1,f2},
 FermiLine = Table[{i dk,EFermi},{i,0,numPartitions}];
-f1=ListPlot[list2,Joined-> True,Mesh-> All,PlotRange->{minE,maxE}];
+f1=ListPlot[list,Joined-> True,Mesh-> All,PlotRange->{minE,maxE}];
 f2 = ListPlot[FermiLine,Joined-> True,PlotStyle-> {Thick,Black}];
 Show[f1,f2]
 ]
@@ -284,23 +314,20 @@ oldDist=listvals;
 errorList={};
 error=0;
 errorTrackingList={};
-
 While[True,
 baseMatrix=BaseMatrixTakesChargeList[listvals];
 oldDist=listvals; 
 listvals = normalizedSumList[numStates];
 errorList = oldDist-listvals;
 error=errorList.errorList/(NN (MM-1));
-Print["error=",error];
 listvals=(1-\[Beta])listvals +\[Beta] oldDist; 
 AppendTo[errorTrackingList,error];
-
 If[error<errorTolerance,Break[]];
 ];
 {listvals,errorTrackingList}
 ]
 
-PlotFullSpaceDistribution[listvals_]:=Module[{interpList,testInterp},
+PlotFullSpaceDistribution[listvals_List]:=Module[{interpList,testInterp},
 interpList=Flatten[Table[
 {{i ,j} ,listvals[[j + (MM-1)(i-1)]]},
 {i,1,NN},
