@@ -10,10 +10,10 @@
 NotebookFileLineBreakTest
 NotebookFileLineBreakTest
 NotebookDataPosition[       157,          7]
-NotebookDataLength[    118190,       2020]
-NotebookOptionsPosition[    117740,       2001]
-NotebookOutlinePosition[    118082,       2016]
-CellTagsIndexPosition[    118039,       2013]
+NotebookDataLength[    118728,       2039]
+NotebookOptionsPosition[    118275,       2020]
+NotebookOutlinePosition[    118620,       2035]
+CellTagsIndexPosition[    118577,       2032]
 WindowFrame->Normal*)
 
 (* Beginning of Notebook Content *)
@@ -39,40 +39,49 @@ Cell[BoxData[{
   RowBox[{"\[Epsilon]2", "=", "5"}], ";"}], "\n", 
  RowBox[{
   RowBox[{
-   RowBox[{"H", "=", "12"}], ";", 
-   RowBox[{"(*", 
-    RowBox[{
-    "Height", " ", "of", " ", "first", " ", "layer", " ", "in", " ", 
-     "angstroms"}], "*)"}], "\n", 
+   RowBox[{"H", "=", "12"}], ";"}], 
+  RowBox[{"(*", 
+   RowBox[{
+   "Height", " ", "of", " ", "first", " ", "layer", " ", "in", " ", 
+    "angstroms"}], "*)"}]}], "\n", 
+ RowBox[{
+  RowBox[{
    RowBox[{"a", "=", " ", "3.904"}], ";"}], 
   RowBox[{"(*", 
    RowBox[{"unit", " ", "cell", " ", "size", " ", "in", " ", "angstroms"}], 
    "*)"}]}], "\n", 
  RowBox[{
-  RowBox[{"\[Alpha]", "=", 
-   RowBox[{".529", "/", "a"}]}], ";", 
+  RowBox[{
+   RowBox[{"\[Alpha]", "=", 
+    RowBox[{".529", "/", "a"}]}], ";"}], 
   RowBox[{"(*", 
    RowBox[{
     RowBox[{
      SubscriptBox["a", "0"], "/", "a"}], ",", " ", 
     RowBox[{"where", " ", 
      SubscriptBox["a", "0"], " ", "is", " ", "the", " ", "Bohr", " ", 
-     "radius"}]}], "*)"}], "\n", 
-  RowBox[{"t1", "=", ".25"}], ";", 
+     "radius"}]}], "*)"}]}], "\n", 
+ RowBox[{
+  RowBox[{
+   RowBox[{"t1", "=", ".25"}], ";"}], 
   RowBox[{"(*", 
-   RowBox[{"hopping", " ", "parameters", " ", "in", " ", "eV"}], "*)"}], "\n", 
+   RowBox[{"hopping", " ", "parameters", " ", "in", " ", "eV"}], 
+   "*)"}]}], "\n", 
+ RowBox[{
   RowBox[{"t2", "=", ".025"}], ";"}], "\n", 
  RowBox[{
   RowBox[{"MM", "=", "10"}], ";"}], "\n", 
  RowBox[{
   RowBox[{"NN", "=", "4"}], ";"}], "\n", 
  RowBox[{
-  RowBox[{"\[Beta]", "=", ".95"}], ";", 
+  RowBox[{
+   RowBox[{"\[Beta]", "=", ".95"}], ";"}], 
   RowBox[{"(*", 
    RowBox[{
    "percent", " ", "of", " ", "the", " ", "old", " ", "distribution", " ", 
     "to", " ", "keep", " ", "when", " ", "calculating", " ", "the", " ", 
-    "new", " ", "distribution"}], "*)"}], "\n", 
+    "new", " ", "distribution"}], "*)"}]}], "\n", 
+ RowBox[{
   RowBox[{"numPartitions", "=", "20"}], ";"}], "\n", 
  RowBox[{
   RowBox[{
@@ -86,18 +95,7 @@ Cell[BoxData[{
      "t1", ",", "t2", ",", " ", "MM", ",", " ", "NN", ",", " ", "\[Beta]", 
      ",", " ", "numPartitions", ",", " ", "numStates"}], "]"}], ";"}], 
   "\[IndentingNewLine]"}], "\[IndentingNewLine]", 
- RowBox[{"Initialize", "[", "]"}]}], "Input",
- CellChangeTimes->{{3.652459256521038*^9, 3.652459299477333*^9}, {
-  3.6524603235227275`*^9, 3.65246032434581*^9}, {3.6524681612654424`*^9, 
-  3.652468162161532*^9}, {3.652546313458059*^9, 3.652546325732286*^9}, {
-  3.652546426713383*^9, 3.6525464834180527`*^9}, {3.6525465398576965`*^9, 
-  3.652546569205631*^9}, {3.652549812493927*^9, 3.652549814193097*^9}, {
-  3.652549916202297*^9, 3.6525499212167983`*^9}, {3.6525500104057164`*^9, 
-  3.652550012264902*^9}}],
-
-Cell[CellGroupData[{
-
-Cell[BoxData[{
+ RowBox[{"Initialize", "[", "]"}], "\[IndentingNewLine]", 
  RowBox[{
   RowBox[{"firstGuess", "=", 
    RowBox[{"Flatten", "[", 
@@ -127,16 +125,36 @@ Cell[BoxData[{
    RowBox[{"SelfConsistentDistribution", "[", 
     RowBox[{"firstGuess", ",", ".0005"}], "]"}]}], 
   ";"}], "\[IndentingNewLine]", 
- RowBox[{"PlotFullSpaceDistribution", "[", "listvals", 
-  "]"}], "\[IndentingNewLine]", 
+ RowBox[{"Export", "[", 
+  RowBox[{
+  "\"\<NanowireCalculations/testList.txt\>\"", ",", "listvals", ",", 
+   "\"\<List\>\""}], "]"}], "\[IndentingNewLine]", 
  RowBox[{
-  RowBox[{"bandList", "=", 
-   RowBox[{"BandStructureList", "[", "listvals", "]"}]}], 
-  ";"}], "\[IndentingNewLine]", 
- RowBox[{"BandStructurePlot", "[", 
-  RowBox[{"0", ",", "5", ",", "bandList"}], "]"}], "\[IndentingNewLine]", 
- RowBox[{"BandStructurePlot", "[", 
-  RowBox[{"0", ",", "10", ",", "bandList"}], "]"}]}], "Input",
+  RowBox[{"(*", "\[IndentingNewLine]", 
+   RowBox[{
+    RowBox[{
+     RowBox[{"PlotFullSpaceDistribution", "[", "listvals", "]"}], 
+     "\[IndentingNewLine]", 
+     RowBox[{"bandList", "=", 
+      RowBox[{"BandStructureList", "[", "listvals", "]"}]}]}], ";", 
+    "\[IndentingNewLine]", 
+    RowBox[{
+     RowBox[{"BandStructurePlot", "[", 
+      RowBox[{"0", ",", "5", ",", "bandList"}], "]"}], "\[IndentingNewLine]", 
+     RowBox[{"BandStructurePlot", "[", 
+      RowBox[{"0", ",", "10", ",", "bandList"}], "]"}]}]}], 
+   "*)"}]}]}], "Input",
+ CellChangeTimes->{{3.652459256521038*^9, 3.652459299477333*^9}, {
+  3.6524603235227275`*^9, 3.65246032434581*^9}, {3.6524681612654424`*^9, 
+  3.652468162161532*^9}, {3.652546313458059*^9, 3.652546325732286*^9}, {
+  3.652546426713383*^9, 3.6525464834180527`*^9}, {3.6525465398576965`*^9, 
+  3.652546569205631*^9}, {3.652549812493927*^9, 3.652549814193097*^9}, {
+  3.652549916202297*^9, 3.6525499212167983`*^9}, {3.6525500104057164`*^9, 
+  3.652550012264902*^9}, {3.6530637627070975`*^9, 3.653063763292156*^9}}],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[""], "Input",
  CellChangeTimes->{{3.6524653219215364`*^9, 3.6524653796203055`*^9}, {
    3.652465570562398*^9, 3.6524655713384757`*^9}, {3.652465644382779*^9, 
    3.6524656450918503`*^9}, 3.652465873673706*^9, {3.65246590671601*^9, 
@@ -146,7 +164,8 @@ Cell[BoxData[{
    3.6525493441080933`*^9, 3.6525493819018726`*^9}, {3.6525494731059923`*^9, 
    3.65254947878856*^9}, {3.65254960529821*^9, 3.652549606450325*^9}, {
    3.652550081926868*^9, 3.652550146895364*^9}, {3.6525502110847826`*^9, 
-   3.6525502466863422`*^9}}],
+   3.6525502466863422`*^9}, {3.6530634927281027`*^9, 3.653063516059435*^9}, 
+   3.65306375943377*^9}],
 
 Cell[BoxData[
  Graphics3DBox[GraphicsComplex3DBox[CompressedData["
@@ -2000,7 +2019,7 @@ B1T3sMH5XHG3YjwesDuguo8TzgcATNem6A==
 }, Open  ]]
 },
 WindowSize->{624, 946},
-WindowMargins->{{Automatic, 0}, {0, Automatic}},
+WindowMargins->{{208, Automatic}, {Automatic, 12}},
 FrontEndVersion->"9.0 for Microsoft Windows (64-bit) (January 25, 2013)",
 StyleDefinitions->"Default.nb"
 ]
@@ -2015,12 +2034,12 @@ CellTagsIndex->{}
 *)
 (*NotebookFileOutline
 Notebook[{
-Cell[557, 20, 2870, 75, 432, "Input"],
+Cell[557, 20, 4736, 132, 749, "Input"],
 Cell[CellGroupData[{
-Cell[3452, 99, 2129, 49, 289, "Input"],
-Cell[5584, 150, 97285, 1586, 302, "Print"],
-Cell[102872, 1738, 6170, 109, 258, "Output"],
-Cell[109045, 1849, 8679, 149, 255, "Output"]
+Cell[5318, 156, 798, 11, 31, "Input"],
+Cell[6119, 169, 97285, 1586, 302, "Print"],
+Cell[103407, 1757, 6170, 109, 258, "Output"],
+Cell[109580, 1868, 8679, 149, 255, "Output"]
 }, Open  ]]
 }
 ]
