@@ -13,7 +13,7 @@ MM=8;
 NN=4;
 \[Beta]=.95;(*percent of the old distribution to keep when calculating the new distribution*)
 numPartitions=20;
-numStates=50;
+numStates=20;
 
 Ry=13.60569253;(*Rydberg unit of energy, in eV. 8\[Pi]Ry=e^2/(Subscript[a, 0]Subscript[\[Epsilon], 0]) in eV*)
 
@@ -28,7 +28,7 @@ EFermi= 0;
 errorTrackingList={};
 
 \[Alpha]=.529/a;(*Subscript[a, 0]/a, where Subscript[a, 0] is the Bohr radius*)
-densityToNumStatesScaling=(NN(MM-1)N[Pi]/numPartitions)^-1;
+densityToNumStatesScaling=(NN(MM-1)dk)^-1;
 \[Lambda] = ((\[Epsilon]2/\[Epsilon]1)(1/2 ArcTan[(MM a)/(2H)]-1/2 ArcTan[-((MM-2) a)/(2H)])NN (MM-1) 1/numPartitions)^-1 numStates;
 totalCharge= -(\[Epsilon]2/\[Epsilon]1)(\[Lambda]/N[\[Pi]])(1/2 ArcTan[(MM a)/(2H)]-1/2 ArcTan[-(((MM-2) a)/(2H))]);
 
@@ -81,19 +81,18 @@ NN=newNN;
 \[Beta]=new\[Beta];
 numPartitions=newnumPartitions;
 numStates=newnumStates;
-densityToNumStatesScaling=(NN(MM-1)N[Pi]/numPartitions)^-1;
+densityToNumStatesScaling=(NN(MM-1)dk)^-1;
 \[Alpha]=.529/a;(*Subscript[a, 0]/a, where Subscript[a, 0] is the Bohr radius*)
 \[Lambda] = ((\[Epsilon]2/\[Epsilon]1)(1/2 ArcTan[(MM a)/(2H)]-1/2 ArcTan[-((MM-2) a)/(2H)])NN (MM-1) 1/numPartitions)^-1 numStates;
 totalCharge= -(\[Epsilon]2/\[Epsilon]1)(\[Lambda]/N[\[Pi]])(1/2 ArcTan[(MM a)/(2H)]-1/2 ArcTan[-(((MM-2) a)/(2H))]);
 mm=Floor[(MM+1)/2];
-totalCharge= -(\[Epsilon]2/\[Epsilon]1)(\[Lambda]/N[\[Pi]])(1/2 ArcTan[(MM a)/(2H)]-1/2 ArcTan[-(((MM-2) a)/(2H))]);
 ]
 
 (*Poisson solver that implements the first part of the algorithm described below, solving over full space, including periodic edge - it represents the Laplacian as a matrix operator then inverts it. Any solution to Poisson's equation is now found by multiplying the inverse matrix by the (forcing function \[Rho]? idk if you can call it that)*)
 (*This is a symmetric finite difference method to solve the Poisson Equation*) 
 (*en.wikipedia.org/wiki/Discrete_Poisson_equation*)
 PoissonSolver[chargeList_List ]:=Module[
-{m,m1,m2,m3,m4,m5,m6,m7,m8,m9,newm,\[Gamma],plotList,tempTotal,list,potential,exteriorPoints,chargeVector},
+{m,m1,m2,m3,m4,m5,m6,m7,m8,m9,newm,\[Gamma],plotList,list,potential,exteriorPoints,chargeVector},
 
 (*construct D, the matrix operator that corresponds to the Laplacian. This is a 9 point stencil. It's periodic with respect to two edges: Born-von Karman boundaries. One edge is fixed to 0 everywhere: Dirichlet boundaries. The last edge has the normal component of the flux at the boundary: Neumann boundaries.*)
 periodicblock[c_,b_]:=c IdentityMatrix[MM-1]+DiagonalMatrix[Table[b,{i,0,MM-3}],1]+DiagonalMatrix[Table[b,{i,0,MM-3}],-1]+DiagonalMatrix[{b},-MM+2]+DiagonalMatrix[{b},MM-2];
@@ -111,7 +110,6 @@ m9=KroneckerProduct[DiagonalMatrix[Join[Table[0,{i,1,NN}],{1}],0],-m7];
 m = m3+m4+m5+m6+m8+m9;
 newm=m3+m4+m5;
 
-tempTotal=Flatten[chargeList]//Total;
 (*coefficient in front of n on the right hand side of the poisson equation*)
 \[Gamma]=-((8N[\[Pi]]Ry \[Alpha])/\[Epsilon]2);
 e1[j_]:=(8N[\[Pi]]Ry \[Alpha] \[Lambda] H a)/(2 N[\[Pi]]\[Epsilon]1 (H^2+(j-Floor[(MM+1)/2])^2 a^2));(*Normal component of electric field at top edge of the grid*)
@@ -193,7 +191,6 @@ degeneracyList=spinKDegeneracyFactor[kz] Table[1,{i,1,vals//Length}];
 ];
 
 (*returns sorted list of energies for ALL k states*)
-(*can parallelize later*)
 TotalEnergySortedList[]:=Module[{vecs,vals,degeneracies,sys,orderList,temp},
 
 sys=eigensystem[0];
