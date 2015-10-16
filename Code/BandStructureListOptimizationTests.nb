@@ -1,0 +1,146 @@
+(* Content-type: application/vnd.wolfram.mathematica *)
+
+(*** Wolfram Notebook File ***)
+(* http://www.wolfram.com/nb *)
+
+(* CreatedBy='Mathematica 9.0' *)
+
+(*CacheID: 234*)
+(* Internal cache information:
+NotebookFileLineBreakTest
+NotebookFileLineBreakTest
+NotebookDataPosition[       157,          7]
+NotebookDataLength[      4106,        136]
+NotebookOptionsPosition[      3645,        115]
+NotebookOutlinePosition[      3987,        130]
+CellTagsIndexPosition[      3944,        127]
+WindowFrame->Normal*)
+
+(* Beginning of Notebook Content *)
+Notebook[{
+Cell[BoxData[{
+ RowBox[{
+  RowBox[{"Do", "[", "\n", 
+   RowBox[{
+    RowBox[{
+     RowBox[{"sys", "=", 
+      RowBox[{
+       RowBox[{"eigensystem", "[", 
+        RowBox[{"i", " ", "dk"}], "]"}], "[", 
+       RowBox[{"[", "1", "]"}], "]"}]}], ";", "\n", 
+     RowBox[{"If", "[", 
+      RowBox[{
+       RowBox[{"i", "==", "0"}], ",", 
+       RowBox[{"shift", "=", 
+        RowBox[{"sys", "[", 
+         RowBox[{"[", "1", "]"}], "]"}]}]}], "]"}], ";", "\n", 
+     RowBox[{"length", "=", 
+      RowBox[{"sys", "//", "Length"}]}], ";", "\n", 
+     RowBox[{"AppendTo", "[", 
+      RowBox[{"plotList", ",", 
+       RowBox[{"Table", "[", "\n", 
+        RowBox[{
+         RowBox[{"{", 
+          RowBox[{
+           RowBox[{"i", " ", "dk"}], ",", " ", 
+           RowBox[{
+            RowBox[{"sys", "[", 
+             RowBox[{"[", "j", "]"}], "]"}], "-", "shift"}]}], "}"}], ",", 
+         "\n", 
+         RowBox[{"{", 
+          RowBox[{"j", ",", "1", ",", "length"}], "}"}]}], "\n", "]"}]}], 
+      "]"}], ";"}], "\n", ",", 
+    RowBox[{"{", 
+     RowBox[{"i", ",", "0", ",", "numPartitions"}], "}"}]}], "\n", "]"}], 
+  ";"}], "\n", 
+ RowBox[{"list2", "=", 
+  RowBox[{"Table", "[", "\n", " ", 
+   RowBox[{
+    RowBox[{
+     RowBox[{"plotList", "[", 
+      RowBox[{"[", 
+       RowBox[{"i", "+", "1"}], "]"}], "]"}], "[", 
+     RowBox[{"[", "j", "]"}], "]"}], ",", "\n", 
+    RowBox[{"{", 
+     RowBox[{"j", ",", "1", ",", "length"}], "}"}], ",", "\n", 
+    RowBox[{"{", 
+     RowBox[{"i", ",", "0", ",", "numPartitions"}], "}"}]}], "\n", 
+   "]"}]}]}], "Input",
+ CellChangeTimes->{3.6540163123238263`*^9}],
+
+Cell[CellGroupData[{
+
+Cell[BoxData["initShift"], "Input",
+ CellChangeTimes->{{3.654016538489441*^9, 3.6540165406196537`*^9}}],
+
+Cell[BoxData[
+ RowBox[{"-", "35.61043169762749`"}]], "Output",
+ CellChangeTimes->{3.6540165409026823`*^9}]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[{
+ RowBox[{
+  RowBox[{"table", "=", 
+   RowBox[{"ParallelTable", "[", 
+    RowBox[{
+     RowBox[{
+      RowBox[{"eigensystem", "[", 
+       RowBox[{"i", " ", "dk"}], "]"}], "[", 
+      RowBox[{"[", "1", "]"}], "]"}], ",", 
+     RowBox[{"{", 
+      RowBox[{"i", ",", "0", ",", "numPartitions"}], "}"}]}], "]"}]}], 
+  ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"table", "=", 
+   RowBox[{"table", "-", 
+    RowBox[{"table", "[", 
+     RowBox[{"1", ",", "1"}], "]"}]}]}], ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"table", "//", "MatrixForm"}], 
+  "\[IndentingNewLine]"}], "\[IndentingNewLine]"}], "Input",
+ CellChangeTimes->{{3.654016322943888*^9, 3.6540163277113647`*^9}, {
+  3.654016361046698*^9, 3.654016402421835*^9}, {3.6540164952391157`*^9, 
+  3.654016534715063*^9}, {3.654016674727063*^9, 3.654016708073397*^9}, {
+  3.654016744442034*^9, 3.6540167478943787`*^9}, {3.654016809660555*^9, 
+  3.654016840592648*^9}, {3.654016885976186*^9, 3.654016914862074*^9}, {
+  3.654016950602648*^9, 3.654017074719058*^9}, {3.6540172644020243`*^9, 
+  3.6540172688604703`*^9}}],
+
+Cell[BoxData[
+ RowBox[{"$Aborted", "[", "]"}]], "Output",
+ CellChangeTimes->{3.6540172780483894`*^9}]
+}, Open  ]]
+},
+WindowSize->{624, 946},
+WindowMargins->{{Automatic, 0}, {0, Automatic}},
+FrontEndVersion->"9.0 for Microsoft Windows (64-bit) (January 25, 2013)",
+StyleDefinitions->"Default.nb"
+]
+(* End of Notebook Content *)
+
+(* Internal cache information *)
+(*CellTagsOutline
+CellTagsIndex->{}
+*)
+(*CellTagsIndex
+CellTagsIndex->{}
+*)
+(*NotebookFileOutline
+Notebook[{
+Cell[557, 20, 1600, 48, 312, "Input"],
+Cell[CellGroupData[{
+Cell[2182, 72, 103, 1, 31, "Input"],
+Cell[2288, 75, 106, 2, 31, "Output"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[2431, 82, 1094, 26, 132, "Input"],
+Cell[3528, 110, 101, 2, 45, "Output"]
+}, Open  ]]
+}
+]
+*)
+
+(* End of internal cache information *)
+
