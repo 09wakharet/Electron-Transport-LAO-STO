@@ -1,6 +1,7 @@
 (* ::Package:: *)
 
 BeginPackage["Methods`"]
+Needs["Developer`"]
 
 \[Epsilon]1=10;
 \[Epsilon]2=5;
@@ -26,6 +27,7 @@ initShift=0;
 mm=Floor[(MM+1)/2];
 EFermi= 0;
 errorTrackingList={};
+SetSharedVariable[vals,vecs,degeneracies];
 
 \[Alpha]=.529/a;(*Subscript[a, 0]/a, where Subscript[a, 0] is the Bohr radius*)
 densityToNumStatesScaling=(NN(MM-1)dk)^-1;
@@ -262,21 +264,13 @@ densityToNumStatesScaling ParallelSum[degeneracies[[n]]totalOrbitallyProjectedDe
 
 normalizedSumPlot[numStatesTotal_]:=PlotFullSpaceDistribution[normalizedSumList[numStatesTotal]];
 
-BandStructureList[chargeList_List]:=Module[{sys,plotList={},list2,length,FermiLine,f1,f2,shift=0},
+BandStructureList[chargeList_List]:=Module[{table,length},
 baseMatrix=BaseMatrixTakesChargeList[chargeList];
-SetSharedVariable[plotList];
-Do[
-sys=eigensystem[i dk][[1]];
-If[i==0,shift=sys[[1]]];
-length=sys//Length;
-AppendTo[plotList,Table[
-{i dk, sys[[j]]-shift},
-{j,1,length}
-]];
-,{i,0,numPartitions}
-];
-list2=Table[
- plotList[[i+1]][[j]],
+table=ParallelTable[eigensystem[i dk][[1]],{i,0,numPartitions}];
+table=table-table[[1,1]];
+length=table[[1]]//Length;
+Table[
+{i dk, table[[i+1]][[j]]},
 {j,1,length},
 {i,0,numPartitions}
 ]
