@@ -3,9 +3,9 @@
 BeginPackage["Methods`"]
 Needs["Developer`"]
 
-\[Epsilon]1=10;
-\[Epsilon]2=5;
-H=12;(*Height of first layer in angstroms*)
+\[Epsilon]1=10.;
+\[Epsilon]2=5.;
+H=12.;(*Height of first layer in angstroms*)
 a= 3.904;(*unit cell size in angstroms*)
 t1=.25;(*hopping parameters in eV*)
 t2=.025;
@@ -23,9 +23,9 @@ vecs={};
 degeneracies={};
 baseMatrix={};
 dk=N[Pi]/numPartitions;
-initShift=0;
+initShift=0.;
 mm=Floor[(MM+1)/2];
-EFermi= 0;
+EFermi= 0.;
 errorTrackingList={};
 SetSharedVariable[vals,vecs,degeneracies];
 
@@ -66,7 +66,7 @@ listvals=Flatten[Table[
 {i,1,NN},
 {j,1,MM-1}
 ],1];
-baseMatrix=BaseMatrixTakesChargeList[listvals];
+baseMatrix=Developer`ToPackedArray[BaseMatrixTakesChargeList[listvals]];
 {vals,vecs,degeneracies}=eigensystem[0];
 DistributeDefinitions["Methods`"];
 ];
@@ -94,7 +94,7 @@ mm=Floor[(MM+1)/2];
 (*This is a symmetric finite difference method to solve the Poisson Equation*) 
 (*en.wikipedia.org/wiki/Discrete_Poisson_equation*)
 PoissonSolver[chargeList_List ]:=Module[
-{m,m1,m2,m3,m4,m5,m6,m7,m8,m9,newm,\[Gamma],plotList,list,potential,exteriorPoints,chargeVector},
+{m,m1,m2,m3,m4,m5,m6,m7,m8,m9,newm,\[Gamma],list,potential,exteriorPoints,chargeVector},
 
 (*construct D, the matrix operator that corresponds to the Laplacian. This is a 9 point stencil. It's periodic with respect to two edges: Born-von Karman boundaries. One edge is fixed to 0 everywhere: Dirichlet boundaries. The last edge has the normal component of the flux at the boundary: Neumann boundaries.*)
 periodicblock[c_,b_]:=c IdentityMatrix[MM-1]+DiagonalMatrix[Table[b,{i,0,MM-3}],1]+DiagonalMatrix[Table[b,{i,0,MM-3}],-1]+DiagonalMatrix[{b},-MM+2]+DiagonalMatrix[{b},MM-2];
@@ -153,7 +153,7 @@ ListPlot3D[plotList,PlotRange->All,PlotLabel->"Calculated Electric Potential",Pl
 
 
 (*gets rid of periodic edge, formats list for hamiltonian*)
-TripleVoltage[chargeList_List ]:=Module[{list=PoissonSolver[chargeList][[All,3]]},
+TripleVoltage[chargeList_List ]:=Module[{list=Developer`ToPackedArray[PoissonSolver[chargeList][[All,3]]]},
 list=Drop[list,{MM,-1,MM}];
 Table[
 list[[j]],
@@ -184,11 +184,12 @@ Exy = 2t2 -2 t2 Cos[kz]+2t1+2t1;*)
 Eyz = 2t1 -2 t1 Cos[kz];
 Ezx = 2t1 -2 t1 Cos[kz];
 Exy = 2t2 -2 t2 Cos[kz];
-hamiltonian  = DiagonalMatrix[{Eyz,Ezx,Exy},0];
+hamiltonian = DiagonalMatrix[{Eyz,Ezx,Exy},0];
+KroneckerProduct[IdentityMatrix[NN*(MM-1)],hamiltonian];
 m1 = KroneckerProduct[IdentityMatrix[NN*(MM-1)],hamiltonian];
 matrix=baseMatrix+m1;
 {vals,vecs}=Eigensystem[matrix];
-degeneracyList=spinKDegeneracyFactor[kz] Table[1,{i,1,vals//Length}];
+degeneracyList=Developer`ToPackedArray[spinKDegeneracyFactor[kz] Table[1,{i,1,vals//Length}]];
 {vals,vecs,degeneracyList}
 ];
 
@@ -196,9 +197,9 @@ degeneracyList=spinKDegeneracyFactor[kz] Table[1,{i,1,vals//Length}];
 TotalEnergySortedList[]:=Module[{vecs,vals,degeneracies,sys,orderList,temp},
 
 sys=ParallelTable[eigensystem[i dk],{i,0,numPartitions}];
-vals=Flatten[sys[[All,1]]];
+vals=Developer`ToPackedArray[Flatten[sys[[All,1]]]];
 vecs=Flatten[sys[[All,2]],1];
-degeneracies=Flatten[sys[[All,3]]];
+degeneracies=Developer`ToPackedArray[Flatten[sys[[All,3]]]];
 
 orderList=Ordering[vals];
 vals=vals[[orderList]];
