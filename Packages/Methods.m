@@ -94,14 +94,13 @@ mm=Floor[(MM+1)/2];
 (*This is a symmetric finite difference method to solve the Poisson Equation*) 
 (*en.wikipedia.org/wiki/Discrete_Poisson_equation*)
 PoissonSolver[chargeList_List ]:=Module[
-{m,m1,m2,m3,m4,m5,m6,m7,m8,m9,newm,\[Gamma],list,potential,exteriorPoints,chargeVector},
+{m,m1,m2,m3,m4,m5,m6,m7,m8,m9,newm,\[Gamma],potential,exteriorPoints,chargeVector},
 
 (*construct D, the matrix operator that corresponds to the Laplacian. This is a 9 point stencil. It's periodic with respect to two edges: Born-von Karman boundaries. One edge is fixed to 0 everywhere: Dirichlet boundaries. The last edge has the normal component of the flux at the boundary: Neumann boundaries.*)
 periodicblock[c_,b_]:=c IdentityMatrix[MM-1]+DiagonalMatrix[Table[b,{i,0,MM-3}],1]+DiagonalMatrix[Table[b,{i,0,MM-3}],-1]+DiagonalMatrix[{b},-MM+2]+DiagonalMatrix[{b},MM-2];
 m1 = periodicblock[-2./3,-1/6];
 m2 = periodicblock[10/3,-2/3];
 m3 =KroneckerProduct[DiagonalMatrix[Join[Table[1,{i,1,NN}],{0}],0],m2];
-
 m4 =KroneckerProduct[DiagonalMatrix[Join[Table[1,{i,1,NN-1}],{0}],1],m1];
 m5 =KroneckerProduct[DiagonalMatrix[Join[Table[1,{i,1,NN-1}],{0}],-1],m1];
 m6 =KroneckerProduct[DiagonalMatrix[{1},NN],m1];
@@ -120,29 +119,21 @@ e1[j_]:=(8N[\[Pi]]Ry \[Alpha] \[Lambda] H a)/(2 N[\[Pi]]\[Epsilon]1 (H^2+(j-Floo
 chargeVector  = \[Gamma] chargeList;
 exteriorPoints = 
 Table[
-  N[e1[j ]] ,
+  N[e1[j ]],
 {j,1,MM-1}
 ]//Flatten;
 chargeVector = Join[chargeVector, exteriorPoints];
+(*correction to get 4th order error*)
 chargeVector=chargeVector-1/2 newm.chargeVector;
-(*Calculates the potential*)
-potential = LinearSolve[m,chargeVector];
+(*calculates the potential and formats it as a matrix, while dropping the row of ghost points*)
+potential=Drop[Partition[LinearSolve[m,chargeVector],MM-1],-1];
+
+(*inserts periodic edge*)
+potential=Insert[potential//Transpose,potential[[All,1]],-1]//Transpose//Flatten;
 
 (*Reindexes the potential and outputs a list of voltage formatted as {x,y,V(x,y)}*)
-list={};
-Do[
-AppendTo[list,
-Table[
-potential[[j + (MM-1)(i-1)]],
-{j,1,MM-1}
-]
-];
-AppendTo[list,potential[[1 + (MM-1)(i-1)]]];
-list=list//Flatten;
-,{i,1,NN}
-];
 Flatten[Table[
-{i,j,list[[j + (MM)(i-1)]]},
+{i,j,potential[[j + (MM)(i-1)]]},
 {i,1,NN},
 {j,1,MM}
 ],1]
@@ -155,11 +146,7 @@ ListPlot3D[plotList,PlotRange->All,PlotLabel->"Calculated Electric Potential",Pl
 (*gets rid of periodic edge, formats list for hamiltonian*)
 TripleVoltage[chargeList_List ]:=Module[{list=Developer`ToPackedArray[PoissonSolver[chargeList][[All,3]]]},
 list=Drop[list,{MM,-1,MM}];
-Table[
-list[[j]],
-{j,1,list//Length},
-{i,1,3}
-]//Flatten
+Partition[Join[list,list,list],list//Length]//Transpose//Flatten
 ]
 
 BaseMatrixTakesChargeList[chargeList_List ]:=Module[{list=TripleVoltage[chargeList],voltageMatrix,tx,ty,m1,m2,m3,m4},
@@ -212,6 +199,7 @@ degeneracies=degeneracies[[orderList]];
 (*returns portion of the energy list to use and computers the fractional filling*)
 NecessaryStates[numStatesTotal_]:=Module[{list=TotalEnergySortedList[],sum=0,count=0,vals,vecs,degeneracies},
 degeneracies=list[[3]];
+(*avoids computing all partial sums, for increased efficiency with long lists*)
 Do[
 sum+=degeneracies[[i]];
 If[sum>numStatesTotal,
