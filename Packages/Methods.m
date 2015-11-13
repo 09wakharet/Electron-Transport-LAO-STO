@@ -285,6 +285,7 @@ listvals = normalizedSumList[numStates];
 errorList = oldDist-listvals;
 error=errorList.errorList/(NN (MM-1));
 listvals=(1-\[Beta])listvals +\[Beta] oldDist; 
+listvals=(firstGuess//Abs//Total )/(listvals//Abs//Total) listvals;
 AppendTo[errorTrackingList,error];
 If[error<errorTolerance,Break[]];
 ];
