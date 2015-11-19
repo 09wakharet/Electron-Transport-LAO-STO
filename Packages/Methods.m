@@ -31,7 +31,8 @@ SetSharedVariable[vals,vecs,degeneracies];
 
 \[Alpha]=.529/a;(*Subscript[a, 0]/a, where Subscript[a, 0] is the Bohr radius*)
 densityToNumStatesScaling=(NN(MM-1)dk)^-1;
-\[Lambda] = ((\[Epsilon]2/\[Epsilon]1)(1/2 ArcTan[(MM a)/(2H)]-1/2 ArcTan[-((MM-2) a)/(2H)])NN (MM-1) 1/numPartitions)^-1 numStates;
+lambdaToNumStatesScaling = ((\[Epsilon]2/\[Epsilon]1)(1/2 ArcTan[(MM a)/(2H)]-1/2 ArcTan[-((MM-2) a)/(2H)])NN (MM-1) 1/numPartitions)^-1;
+\[Lambda] = lambdaToNumStatesScaling numStates;
 totalCharge= -(\[Epsilon]2/\[Epsilon]1)(\[Lambda]/N[\[Pi]])(1/2 ArcTan[(MM a)/(2H)]-1/2 ArcTan[-(((MM-2) a)/(2H))]);
 
 chargeDist[x_,y_]:=Sin[(\[Pi] y)/MM]Exp[-(2\[Pi] x)/MM];
@@ -84,8 +85,9 @@ NN=newNN;
 numPartitions=newnumPartitions;
 numStates=newnumStates;
 densityToNumStatesScaling=(NN(MM-1)dk)^-1;
+lambdaToNumStatesScaling = ((\[Epsilon]2/\[Epsilon]1)(1/2 ArcTan[(MM a)/(2H)]-1/2 ArcTan[-((MM-2) a)/(2H)])NN (MM-1) 1/numPartitions)^-1;
 \[Alpha]=.529/a;(*Subscript[a, 0]/a, where Subscript[a, 0] is the Bohr radius*)
-\[Lambda] = ((\[Epsilon]2/\[Epsilon]1)(1/2 ArcTan[(MM a)/(2H)]-1/2 ArcTan[-((MM-2) a)/(2H)])NN (MM-1) 1/numPartitions)^-1 numStates;
+\[Lambda] = lambdaToNumStatesScaling numStates;
 totalCharge= -(\[Epsilon]2/\[Epsilon]1)(\[Lambda]/N[\[Pi]])(1/2 ArcTan[(MM a)/(2H)]-1/2 ArcTan[-(((MM-2) a)/(2H))]);
 mm=Floor[(MM+1)/2];
 ]
