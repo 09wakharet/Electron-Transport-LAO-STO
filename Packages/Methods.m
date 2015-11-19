@@ -26,6 +26,7 @@ dk=N[Pi]/numPartitions;
 initShift=0.;
 mm=Floor[(MM+1)/2];
 EFermi= 0.;
+kFermi=0;(*k state corresponding to EFermi*)
 errorTrackingList={};
 SetSharedVariable[vals,vecs,degeneracies];
 
@@ -39,7 +40,7 @@ chargeDist[x_,y_]:=Sin[(\[Pi] y)/MM]Exp[-(2\[Pi] x)/MM];
 
 
 
-TotalEnergySortedList::usage="TotalEnergySortedList[] returns {{vals}.{vecs},{degeneracies}} for every site over every available k value, sorted by order of increasing energy";
+TotalEnergySortedList::usage="TotalEnergySortedList[] returns {{vals},{vecs},{degeneracies},{k}} for every site over every available k value, sorted by order of increasing energy";
 PoissonSolver::usage="PoissonSolver[chargeList_List] returns the solution to Poisson's equation over a NNxMM grid when given the charge distribution at each point as a list.";
 PoissonPlot::usage="PoissonPlot[chargeList_List] plots the solution to Poisson's equation.";
 eigensystem::usage="eigensystem[kz_] returns the eigensystem of the matrix operator for in the tight binding model in the form {{vals},{vecs},{degeneracies}}. This gives the eigenvalues of each atom for a particular value of crystal momentum, followed by the corresponding eigenvectors, followed by the corresponding degeneracies.";
@@ -183,8 +184,9 @@ degeneracyList=Developer`ToPackedArray[spinKDegeneracyFactor[kz] Table[1,{i,1,va
 ];
 
 (*returns sorted list of energies for ALL k states*)
-TotalEnergySortedList[]:=Module[{vecs,vals,degeneracies,sys,orderList,temp},
+TotalEnergySortedList[]:=Module[{vecs,vals,degeneracies,sys,orderList,kstates},
 
+kstates=ParallelTable[i dk,{i,0,numPartitions}];
 sys=ParallelTable[eigensystem[i dk],{i,0,numPartitions}];
 vals=Developer`ToPackedArray[Flatten[sys[[All,1]]]];
 vecs=Flatten[sys[[All,2]],1];
@@ -194,8 +196,9 @@ orderList=Ordering[vals];
 vals=vals[[orderList]];
 vecs=vecs[[orderList]];
 degeneracies=degeneracies[[orderList]];
+kstates=kstates[[orderList]];
 
-{vals,vecs,degeneracies}
+{vals,vecs,degeneracies,kstates}
 ]
 
 (*returns portion of the energy list to use and computers the fractional filling*)
@@ -219,8 +222,9 @@ degeneracies=Join[degeneracies,{numStatesTotal-(sum-list[[3,count]])}];
 
 If[sum-numStatesTotal== list[[3,count]],vals=Drop[vals,-1];vecs=Drop[vecs,-1];degeneracies=Drop[degeneracies,-1]];
 EFermi=vals[[-1]];
-{vals,vecs,degeneracies}
+kFermi=list[[4]][[count]];
 
+{vals,vecs,degeneracies}
 ];
 
 (*\[Alpha]=1 for yz, 2 for zx, 3 for xy*)
