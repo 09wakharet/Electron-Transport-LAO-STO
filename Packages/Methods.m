@@ -186,11 +186,11 @@ degeneracyList=Developer`ToPackedArray[spinKDegeneracyFactor[kz] Table[1,{i,1,va
 (*returns sorted list of energies for ALL k states*)
 TotalEnergySortedList[]:=Module[{vecs,vals,degeneracies,sys,orderList,kstates},
 
-kstates=ParallelTable[i dk,{i,0,numPartitions}];
 sys=ParallelTable[eigensystem[i dk],{i,0,numPartitions}];
 vals=Developer`ToPackedArray[Flatten[sys[[All,1]]]];
 vecs=Flatten[sys[[All,2]],1];
 degeneracies=Developer`ToPackedArray[Flatten[sys[[All,3]]]];
+kstates=ParallelTable[i dk,{j,1,vecs[[1]]//Length},{i,0,numPartitions}]//Transpose//Flatten;
 
 orderList=Ordering[vals];
 vals=vals[[orderList]];
