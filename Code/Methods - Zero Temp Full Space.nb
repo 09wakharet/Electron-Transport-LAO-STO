@@ -10,10 +10,10 @@
 NotebookFileLineBreakTest
 NotebookFileLineBreakTest
 NotebookDataPosition[       157,          7]
-NotebookDataLength[     67301,       1666]
-NotebookOptionsPosition[     66905,       1648]
-NotebookOutlinePosition[     67398,       1668]
-CellTagsIndexPosition[     67355,       1665]
+NotebookDataLength[     68690,       1697]
+NotebookOptionsPosition[     68293,       1679]
+NotebookOutlinePosition[     68787,       1699]
+CellTagsIndexPosition[     68744,       1696]
 WindowFrame->Normal*)
 
 (* Beginning of Notebook Content *)
@@ -47,22 +47,16 @@ Cell[BoxData[
       FontColor->RGBColor[0, 0, 1]], 
      StyleBox[" ",
       FontWeight->"Bold"], 
-     StyleBox["-",
-      FontWeight->"Bold"], 
-     StyleBox[" ",
-      FontWeight->"Bold"], 
      StyleBox[
-      RowBox[{
-      "it", " ", "represents", " ", "the", " ", "Laplacian", " ", "as", " ", 
-       "a", " ", "matrix", " ", "operator", " ", "then", " ", "inverts", " ", 
-       RowBox[{"it", ".", " ", "Any"}], " ", "solution", " ", "to", " ", 
-       RowBox[{"Poisson", "'"}], "s", " ", "equation", " ", "is", " ", "now", 
-       " ", "found", " ", "by", " ", "multiplying", " ", "the", " ", 
-       "inverse", " ", "matrix", " ", "by", " ", "the", " ", 
-       RowBox[{"(", 
-        RowBox[{"forcing", " ", "function", " ", 
-         RowBox[{"\[Rho]", "?", " ", "idk"}], " ", "if", " ", "you", " ", 
-         "can", " ", "call", " ", "it", " ", "that"}], ")"}]}],
+      RowBox[{"-", " ", 
+       RowBox[{
+       "it", " ", "represents", " ", "the", " ", "Laplacian", " ", "as", " ", 
+        "a", " ", "matrix", " ", "operator", " ", "then", " ", "inverts", " ", 
+        RowBox[{"it", ".", " ", "Any"}], " ", "solution", " ", "to", " ", 
+        RowBox[{"Poisson", "'"}], "s", " ", "equation", " ", "is", " ", "now",
+         " ", "found", " ", "by", " ", "multiplying", " ", "the", " ", 
+        "inverse", " ", "matrix", " ", "by", " ", "the", " ", "forcing", " ", 
+        "function", " ", "\[Rho]"}]}],
       FontWeight->"Bold"]}]}], 
    StyleBox["*)",
     FontWeight->"Bold"]}], 
@@ -292,14 +286,16 @@ Cell[BoxData[
         "The", " ", "matrix", " ", "has", " ", "been", " ", "augmented", " ", 
          "so", " ", "that", " ", "the", " ", "bottom", " ", "blocks", " ", 
          "correspond", " ", "to", " ", "a", " ", "row", " ", "of", " ", 
-         "\"\<ghost\>\"", " ", "points", " ", "above", " ", "the", " ", "top",
-          " ", 
-         RowBox[{"row", ".", " ", "THey"}], " ", "are", " ", "used", " ", 
+         "\"\<ghost\>\"", " ", "points", " ", 
+         RowBox[{"(", 
+          RowBox[{
+          "this", " ", "is", " ", "the", " ", "technical", " ", "term"}], 
+          ")"}], "above", " ", "the", " ", "top", " ", 
+         RowBox[{"row", ".", " ", "They"}], " ", "are", " ", "used", " ", 
          "to", " ", "establish", " ", "a", " ", "centered", " ", "second", 
          " ", "order", " ", "approximation", " ", "for", " ", "the", " ", 
          "first", " ", "derivative", " ", "on", " ", "V", " ", "normal", " ", 
-         "to", " ", "the", " ", 
-         RowBox[{"boundary", ".", " ", "This"}]}], " ", "*)"}], 
+         "to", " ", "the", " ", "boundary"}], " ", "*)"}], 
        "\[IndentingNewLine]", 
        RowBox[{"m8", " ", "=", 
         RowBox[{"KroneckerProduct", "[", 
@@ -625,6 +621,19 @@ Cell[BoxData[
       FontWeight->"Bold"]}]}], 
    StyleBox["\[IndentingNewLine]",
     FontWeight->"Bold"], 
+   StyleBox[
+    RowBox[{
+     StyleBox[
+      RowBox[{"(", "*"}]], 
+     RowBox[{
+     "Helper", " ", "function", " ", "that", " ", "outputs", " ", "a", " ", 
+      "plot", " ", "of", " ", "the", " ", "solution", " ", "voltage", " ", 
+      "when", " ", "given", " ", "charge", " ", "as", " ", "a", " ", "list"}], 
+     StyleBox[
+      RowBox[{"*", ")"}]]}],
+    FontWeight->"Bold"], 
+   StyleBox["\[IndentingNewLine]",
+    FontWeight->"Bold"], 
    RowBox[{
     StyleBox[
      RowBox[{"PoissonPlot", "[", "chargeList_List", "]"}],
@@ -651,8 +660,9 @@ Cell[BoxData[
    "\[IndentingNewLine]", "\[IndentingNewLine]", 
    RowBox[{"(*", 
     RowBox[{
-     RowBox[{"gets", " ", "rid", " ", "of", " ", "periodic", " ", "edge"}], 
-     ",", " ", 
+     RowBox[{
+     "Helper", " ", "function", " ", "that", " ", "gets", " ", "rid", " ", 
+      "of", " ", "periodic", " ", "edge"}], ",", " ", 
      RowBox[{"formats", " ", "list", " ", "for", " ", "hamiltonian"}]}], 
     "*)"}], "\[IndentingNewLine]", 
    RowBox[{
@@ -697,6 +707,13 @@ Cell[BoxData[
            RowBox[{"i", ",", "1", ",", "3"}], "}"}]}], "\[IndentingNewLine]", 
          "]"}], "//", "Flatten"}]}]}], "\[IndentingNewLine]", "]"}]}], 
    "\[IndentingNewLine]", "\[IndentingNewLine]", 
+   RowBox[{"(*", 
+    RowBox[{
+     RowBox[{
+     "Helper", " ", "function", " ", "that", " ", "creates", " ", "a", " ", 
+      "matrix", " ", "that", " ", "is", " ", "computer", " ", "once", " ", 
+      "and", " ", "reused", " ", "often"}], " ", "-", " ", 
+     RowBox[{"saves", " ", "memory"}]}], "*)"}], "\[IndentingNewLine]", 
    RowBox[{
     RowBox[{"BaseMatrixTakesChargeList", "[", "chargeList_List", " ", "]"}], ":=", 
     RowBox[{"Module", "[", 
@@ -894,13 +911,12 @@ Cell[BoxData[
    "\[IndentingNewLine]", 
    RowBox[{"(*", 
     RowBox[{
-    "returns", " ", "sorted", " ", "list", " ", "of", " ", "energies", " ", 
-     "for", " ", "ALL", " ", "k", " ", "states"}], "*)"}], 
-   "\[IndentingNewLine]", 
-   RowBox[{"(*", 
-    StyleBox[
-     RowBox[{"can", " ", "parallelize", " ", "later"}],
-     FontColor->RGBColor[0, 0, 1]], "*)"}], "\[IndentingNewLine]", 
+     RowBox[{
+     "computes", " ", "the", " ", "energies", " ", "at", " ", "every", " ", 
+      "possible", " ", "k", " ", "state"}], ",", " ", 
+     RowBox[{"then", " ", "sorts", " ", 
+      RowBox[{"them", ".", " ", "parallelized"}], " ", "for", " ", 
+      RowBox[{"efficiency", "."}]}]}], "*)"}], "\[IndentingNewLine]", 
    RowBox[{
     RowBox[{"TotalEnergySortedList", "[", "]"}], ":=", 
     RowBox[{"Module", "[", 
@@ -984,7 +1000,7 @@ Cell[BoxData[
    RowBox[{"(*", 
     RowBox[{
     "returns", " ", "portion", " ", "of", " ", "the", " ", "energy", " ", 
-     "list", " ", "to", " ", "use", " ", "and", " ", "computers", " ", "the", 
+     "list", " ", "to", " ", "use", " ", "and", " ", "computes", " ", "the", 
      " ", "fractional", " ", "filling"}], "*)"}], "\[IndentingNewLine]", 
    RowBox[{
     RowBox[{
@@ -1169,6 +1185,8 @@ Cell[BoxData[
         StyleBox["]",
          FontWeight->"Bold"]}]}], "\[IndentingNewLine]", "]"}]}], ";"}], 
    "\[IndentingNewLine]", 
+   RowBox[{"(*", 
+    RowBox[{"helper", " ", "functions"}], "*)"}], "\[IndentingNewLine]", 
    RowBox[{
     RowBox[{
      RowBox[{"totalDensity", "[", "n_", "]"}], ":=", 
@@ -1206,7 +1224,7 @@ Cell[BoxData[
      "\[IndentingNewLine]", 
      RowBox[{"PlotFullSpaceDistribution", "[", 
       RowBox[{"totalDensity", "[", "n", "]"}], "]"}]}], ";"}], 
-   "\[IndentingNewLine]", "\[IndentingNewLine]", "\[IndentingNewLine]", 
+   "\[IndentingNewLine]", 
    RowBox[{
     RowBox[{
      RowBox[{"spinKDegeneracyFactor", "[", "kz_", "]"}], ":=", 
@@ -1248,8 +1266,12 @@ Cell[BoxData[
       "\[IndentingNewLine]", "]"}]}], ";"}], "\[IndentingNewLine]", 
    RowBox[{"(*", 
     RowBox[{
-    "returns", " ", "orbitally", " ", "projected", " ", "charge", " ", 
-     "distribution"}], "*)"}], "\[IndentingNewLine]", 
+     RowBox[{
+     "returns", " ", "orbitally", " ", "projected", " ", "charge", " ", 
+      "distribution"}], " ", "-", " ", 
+     RowBox[{
+     "corresponding", " ", "to", " ", "bonding", " ", "in", " ", "only", " ", 
+      "a", " ", "single", " ", "direction"}]}], "*)"}], "\[IndentingNewLine]", 
    RowBox[{
     RowBox[{
      RowBox[{"normalizedProjectedSumList", "[", 
@@ -1288,6 +1310,12 @@ Cell[BoxData[
      RowBox[{"PlotFullSpaceDistribution", "[", 
       RowBox[{"normalizedSumList", "[", "numStatesTotal", "]"}], "]"}]}], 
     ";"}], "\[IndentingNewLine]", "\[IndentingNewLine]", 
+   RowBox[{"(*", 
+    RowBox[{
+    "returns", " ", "a", " ", "plot", " ", "of", " ", "the", " ", "band", " ",
+      "structure", " ", "with", " ", "k", " ", "states", " ", "on", " ", 
+     "the", " ", "x", " ", "axis", " ", "and", " ", "energies", " ", "on", 
+     " ", "the", " ", "y"}], "*)"}], "\[IndentingNewLine]", 
    RowBox[{
     RowBox[{"BandStructure", "[", 
      RowBox[{"minE_", ",", "maxE_"}], "]"}], ":=", 
@@ -1381,6 +1409,8 @@ Cell[BoxData[
        RowBox[{"Show", "[", 
         RowBox[{"f1", ",", "f2"}], "]"}]}]}], "\[IndentingNewLine]", "]"}]}], 
    "\[IndentingNewLine]", "\[IndentingNewLine]", 
+   RowBox[{"(*", 
+    RowBox[{"solves", " ", "for"}], " ", "*)"}], "\[IndentingNewLine]", 
    RowBox[{
     RowBox[{"SelfConsistentDistribution", "[", 
      RowBox[{"firstGuess_", ",", "errorTolerance_"}], "]"}], ":=", 
@@ -1644,10 +1674,11 @@ Cell[BoxData[
    3.6519473810727396`*^9, 3.651947390526685*^9}, 3.651947455242156*^9, {
    3.651947810223651*^9, 3.6519478185124793`*^9}, {3.651947903709998*^9, 
    3.6519479286124887`*^9}, {3.651948471597781*^9, 3.6519484766782894`*^9}, {
-   3.6519486259392138`*^9, 3.6519486539840183`*^9}}]
+   3.6519486259392138`*^9, 3.6519486539840183`*^9}, {3.671470209544936*^9, 
+   3.6714704575597324`*^9}}]
 },
-WindowSize->{624, 946},
-WindowMargins->{{Automatic, 0}, {0, Automatic}},
+WindowSize->{1264, 889},
+WindowMargins->{{0, Automatic}, {Automatic, 0}},
 PrintingCopies->1,
 PrintingPageRange->{32000, 32000},
 PrintingOptions->{"Magnification"->1.,
@@ -1667,7 +1698,7 @@ CellTagsIndex->{}
 *)
 (*NotebookFileOutline
 Notebook[{
-Cell[557, 20, 66344, 1626, 6528, "Input"]
+Cell[557, 20, 67732, 1657, 5248, "Input"]
 }
 ]
 *)
