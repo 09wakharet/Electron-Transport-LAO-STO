@@ -1,0 +1,946 @@
+(* Content-type: application/vnd.wolfram.mathematica *)
+
+(*** Wolfram Notebook File ***)
+(* http://www.wolfram.com/nb *)
+
+(* CreatedBy='Mathematica 9.0' *)
+
+(*CacheID: 234*)
+(* Internal cache information:
+NotebookFileLineBreakTest
+NotebookFileLineBreakTest
+NotebookDataPosition[       157,          7]
+NotebookDataLength[     33651,        937]
+NotebookOptionsPosition[     31607,        868]
+NotebookOutlinePosition[     32292,        895]
+CellTagsIndexPosition[     32166,        889]
+WindowFrame->Normal*)
+
+(* Beginning of Notebook Content *)
+Notebook[{
+Cell["Load the package", "Text",
+ CellChangeTimes->{{3.59303214762442*^9, 3.593032151517508*^9}}],
+
+Cell[BoxData[
+ RowBox[{"Get", "[", "\"\<Eigen`\>\"", "]"}]], "Input",
+ CellChangeTimes->{{3.5930249590596952`*^9, 3.5930249617893333`*^9}, {
+  3.5930250009711*^9, 3.5930250029821444`*^9}, {3.593025119805533*^9, 
+  3.5930251243019753`*^9}, {3.593025224712742*^9, 3.59302523271649*^9}, {
+  3.5930259263190937`*^9, 3.593025927108883*^9}, {3.593032045984831*^9, 
+  3.5930320477448187`*^9}, {3.59303212419508*^9, 3.593032124468025*^9}, {
+  3.593035838239002*^9, 3.593035872652335*^9}, {3.593036145510209*^9, 
+  3.593036172427464*^9}, {3.5930362077447023`*^9, 3.593036265018989*^9}}],
+
+Cell["\<\
+If you wish to use parallelization, load Eigen on each parallel kernal\
+\>", "Text",
+ CellChangeTimes->{{3.593035972404553*^9, 3.593035976839251*^9}}],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"ParallelNeeds", "[", "\"\<Eigen`\>\"", "]"}], 
+  RowBox[{"(*", 
+   RowBox[{
+    RowBox[{
+    "Unless", " ", "your", " ", "differential", " ", "equations", " ", "are", 
+     " ", "very", " ", "complicated"}], ",", " ", 
+    RowBox[{
+    "parallelization", " ", "probably", " ", "will", " ", "not", " ", "give", 
+     " ", "a", " ", "significant", " ", "speed", " ", "up"}]}], 
+   "*)"}]}]], "Input",
+ CellChangeTimes->{{3.593035880636258*^9, 3.593035965425109*^9}, {
+  3.5931781934377813`*^9, 3.593178193571146*^9}}],
+
+Cell[CellGroupData[{
+
+Cell["Harmonic Oscillator ", "Subsubsection",
+ CellChangeTimes->{{3.593032173333638*^9, 3.593032177363212*^9}}],
+
+Cell[TextData[{
+ "The syntax of ",
+ StyleBox["EigenNDSolve",
+  FontFamily->"Courier"],
+ " is very similar to that of ",
+ StyleBox["NDSolve",
+  FontFamily->"Courier"]
+}], "Text",
+ CellChangeTimes->{{3.593032052728258*^9, 3.593032122666584*^9}, {
+  3.593032206211171*^9, 3.593032228037965*^9}}],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"?", "EigenNDSolve"}]], "Input",
+ CellChangeTimes->{{3.593032250460895*^9, 3.593032253247408*^9}}],
+
+Cell[BoxData[
+ StyleBox["\<\"EigenNDsolve[\!\(\*\\nStyleBox[\\\"eqns\\\",\\nFontSlant->\\\"\
+Italic\\\"]\), \
+\!\(\*\\nStyleBox[\\\"{\\\",\\nFontSlant->\\\"Italic\\\"]\)\!\(\*\\nStyleBox[\
+SubscriptBox[\\nStyleBox[\\\"u\\\",\\nFontSlant->\\\"Italic\\\"], \\\"1\\\"],\
+\\nFontSlant->\\\"Italic\\\"]\)\!\(\*\\nStyleBox[\\\",\\\",\\nFontSlant->\\\"\
+Italic\\\"]\)\!\(\*\\nStyleBox[SubscriptBox[\\\"u\\\", \
+\\\"2\\\"],\\nFontSlant->\\\"Italic\\\"]\)\!\(\*\\nStyleBox[\\\",\\\",\\\
+nFontSlant->\\\"Italic\\\"]\)\!\(\*\\nStyleBox[\\\"\[Ellipsis]\\\",\\\
+nFontSlant->\\\"Italic\\\"]\)}, {\!\(\*\\nStyleBox[\\\"x\\\",\\nFontSlant->\\\
+\"Italic\\\"]\)\!\(\*\\nStyleBox[\\\",\\\",\\nFontSlant->\\\"Italic\\\"]\)\!\(\
+\*\\nStyleBox[SubscriptBox[\\\"x\\\", \\\"min\\\"],\\nFontSlant->\\\"Italic\\\
+\"]\)\!\(\*\\nStyleBox[\\\",\\\",\\nFontSlant->\\\"Italic\\\"]\)\!\(\*\\\
+nStyleBox[SubscriptBox[\\\"x\\\", \
+\\\"max\\\"],\\nFontSlant->\\\"Italic\\\"]\)}, \!\(\*\\nStyleBox[\\\"\[Omega]\
+\\\",\\nFontSlant->\\\"Italic\\\"]\), Options]\\nNumerically solves for the \
+eigenfunctions and eigenvalues of \
+\!\(\*\\nStyleBox[\\\"eqns\\\",\\nFontSlant->\\\"Italic\\\"]\)\!\(\*\\\
+nStyleBox[\\\" \\\",\\nFontSlant->\\\"Italic\\\"]\)using a spectral \
+\\nexpansion in Chebyshev \
+polynomials.\\n\!\(\*\\nStyleBox[\\\"{\\\",\\nFontSlant->\\\"Italic\\\"]\)\!\(\
+\*\\nStyleBox[SubscriptBox[\\nStyleBox[\\\"u\\\",\\nFontSlant->\\\"Italic\\\"]\
+, \\\"1\\\"],\\nFontSlant->\\\"Italic\\\"]\)\!\(\*\\nStyleBox[\\\",\\\",\\\
+nFontSlant->\\\"Italic\\\"]\)\!\(\*\\nStyleBox[SubscriptBox[\\\"u\\\", \
+\\\"2\\\"],\\nFontSlant->\\\"Italic\\\"]\)\!\(\*\\nStyleBox[\\\",\\\",\\\
+nFontSlant->\\\"Italic\\\"]\)\!\(\*\\nStyleBox[\\\"\[Ellipsis]\\\",\\\
+nFontSlant->\\\"Italic\\\"]\)\!\(\*\\nStyleBox[\\\"}\\\",\\nFontSlant->\\\"\
+Italic\\\"]\) is a list of the dependent variables;\\n\!\(\*\\nStyleBox[\\\"x\
+\\\",\\nFontSlant->\\\"Italic\\\"]\) is the independent variable, \
+\!\(\*\\nStyleBox[SubscriptBox[\\\"x\\\", \
+\\\"min\\\"],\\nFontSlant->\\\"Italic\\\"]\) and \
+\!\(\*\\nStyleBox[SubscriptBox[\\\"x\\\", \
+\\\"max\\\"],\\nFontSlant->\\\"Italic\\\"]\)\!\(\*\\nStyleBox[\\\" \
+\\\",\\nFontSlant->\\\"Italic\\\"]\)is the range;\\n\!\(\*\\nStyleBox[\\\"\
+\[Omega]\\\",\\nFontSlant->\\\"Italic\\\"]\) is the eigenvalue parameter \
+(\!\(\*\\nStyleBox[\\\"eqns\\\",\\nFontSlant->\\\"Italic\\\"]\) must be \
+linear in \[Omega]).\\n\\nOptions:\\nNpoly\[Rule]80 - Number of polynomials \
+to use in Chebyshev expansion (actually Npoly+1 are used \\n\tdue to \
+\!\(\*SubscriptBox[\(T\), \(0\)]\)).\\nreturnInterp\[Rule]True - If True, \
+returns lists of eigenfunctions as InterpolatingFunction objects.\\n\tIf \
+False, returns a list of the Chebyshev coefficients for each \
+eigenstate.\\nprecision\[Rule]MachinePrecision - Precision of the \
+calculation. If not MachinePrecision,\\n\tcalculation will be much slower; \
+however this is necessary for accurate calculation\\n\twith certain types of \
+differential equations.\\nuseParallel\[Rule]False - Use parallelization in \
+computing the operator matrices. Will only \\n\tsubstantially improve speed \
+with particulatly complex differential equations.\\nnoRowReduce\[Rule]False - \
+If True, over-rides solving for the boundary conditions and forming a\\n\t\
+reduced matrix (see Dongarra et al. 1997). The default option, False, will \
+remove singular\\n\tmatrices from the generalized eigenvalue problem and \
+remove spurious eigenvalues in\\n\tcertain cases.\\n\tAfter some \
+experimentation, it seems that this step generally does not substantially \\n\
+\timprove results aside from removing spurious eigenvalues.\"\>", 
+  "MSG"]], "Print", "PrintUsage",
+ CellChangeTimes->{3.593036296656863*^9},
+ CellTags->"Info3593011096-9207221"]
+}, Open  ]],
+
+Cell["\<\
+Solve for the eigenvalues of the quantum harmonic oscillator on the domain \
+(-10,10)\
+\>", "Text",
+ CellChangeTimes->{{3.593032296267729*^9, 3.593032335293215*^9}}],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"esys", "=", 
+   RowBox[{"EigenNDSolve", "[", 
+    RowBox[{
+     RowBox[{"{", 
+      RowBox[{
+       RowBox[{
+        RowBox[{
+         RowBox[{
+          RowBox[{"-", 
+           FractionBox["1", "2"]}], 
+          RowBox[{
+           RowBox[{"\[Xi]", "''"}], "[", "x", "]"}]}], "+", 
+         RowBox[{
+          FractionBox["1", "2"], 
+          SuperscriptBox["x", "2"], 
+          RowBox[{"\[Xi]", "[", "x", "]"}]}]}], "\[Equal]", 
+        RowBox[{"\[Omega]", " ", 
+         RowBox[{"\[Xi]", "[", "x", "]"}]}]}], ",", 
+       RowBox[{
+        RowBox[{"\[Xi]", "[", 
+         RowBox[{"-", "10"}], "]"}], "\[Equal]", "0"}], ",", 
+       RowBox[{
+        RowBox[{"\[Xi]", "[", "10", "]"}], "\[Equal]", "0"}]}], "}"}], ",", 
+     "\[Xi]", ",", 
+     RowBox[{"{", 
+      RowBox[{"x", ",", 
+       RowBox[{"-", "10"}], ",", "10"}], "}"}], ",", "\[Omega]"}], "]"}]}], 
+  ";"}]], "Input",
+ CellChangeTimes->{{3.593032347288436*^9, 3.593032424887824*^9}}],
+
+Cell[TextData[{
+ StyleBox["EigenNDSolve ",
+  FontFamily->"Courier"],
+ "returns the list {",
+ StyleBox["eigenvalues, ",
+  FontSlant->"Italic"],
+ Cell[BoxData[
+  FormBox[
+   StyleBox["eigenfunctions",
+    FontSlant->"Italic"], TraditionalForm]],
+  FormatType->"TraditionalForm"],
+ " of ",
+ Cell[BoxData[
+  FormBox[
+   RowBox[{
+    SubscriptBox["u", "1"], 
+    StyleBox[",",
+     FontSlant->"Italic"], 
+    StyleBox[" ",
+     FontSlant->"Italic"], 
+    RowBox[{
+     FormBox[
+      StyleBox["eigenfunctions",
+       FontSlant->"Italic"],
+      TraditionalForm], "of", 
+     FormBox[
+      SubscriptBox["u", "2"],
+      TraditionalForm]}]}], TraditionalForm]],
+  FormatType->"TraditionalForm"],
+ ",\[Ellipsis]}"
+}], "Text",
+ CellChangeTimes->{{3.593032479517765*^9, 3.593032604626711*^9}}],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"(*", 
+   RowBox[{
+   "In", " ", "this", " ", "case", " ", "there", " ", "is", " ", "only", " ", 
+    "one", " ", "independent", " ", "variable"}], "*)"}], 
+  "\[IndentingNewLine]", 
+  RowBox[{"Shallow", "[", "esys", "]"}]}]], "Input",
+ CellChangeTimes->{{3.593032689314369*^9, 3.593032724653352*^9}}],
+
+Cell[BoxData[
+ RowBox[{"{", 
+  RowBox[{
+   RowBox[{"{", 
+    RowBox[{
+    "0.4999999999997369`", ",", "1.5000000000000135`", ",", 
+     "2.499999999999888`", ",", "3.500000000000021`", ",", 
+     "4.500000000000114`", ",", "5.499999999999868`", ",", 
+     "6.500000000000314`", ",", "7.500000000000184`", ",", 
+     "8.500000000000014`", ",", "9.500000000000572`", ",", 
+     RowBox[{"\[LeftSkeleton]", "71", "\[RightSkeleton]"}]}], "}"}], ",", 
+   RowBox[{"{", 
+    RowBox[{
+     TagBox[
+      RowBox[{"InterpolatingFunction", "[", 
+       RowBox[{"\[LeftSkeleton]", "5", "\[RightSkeleton]"}], "]"}],
+      False,
+      Editable->False], ",", 
+     TagBox[
+      RowBox[{"InterpolatingFunction", "[", 
+       RowBox[{"\[LeftSkeleton]", "5", "\[RightSkeleton]"}], "]"}],
+      False,
+      Editable->False], ",", 
+     TagBox[
+      RowBox[{"InterpolatingFunction", "[", 
+       RowBox[{"\[LeftSkeleton]", "5", "\[RightSkeleton]"}], "]"}],
+      False,
+      Editable->False], ",", 
+     TagBox[
+      RowBox[{"InterpolatingFunction", "[", 
+       RowBox[{"\[LeftSkeleton]", "5", "\[RightSkeleton]"}], "]"}],
+      False,
+      Editable->False], ",", 
+     TagBox[
+      RowBox[{"InterpolatingFunction", "[", 
+       RowBox[{"\[LeftSkeleton]", "5", "\[RightSkeleton]"}], "]"}],
+      False,
+      Editable->False], ",", 
+     TagBox[
+      RowBox[{"InterpolatingFunction", "[", 
+       RowBox[{"\[LeftSkeleton]", "5", "\[RightSkeleton]"}], "]"}],
+      False,
+      Editable->False], ",", 
+     TagBox[
+      RowBox[{"InterpolatingFunction", "[", 
+       RowBox[{"\[LeftSkeleton]", "5", "\[RightSkeleton]"}], "]"}],
+      False,
+      Editable->False], ",", 
+     TagBox[
+      RowBox[{"InterpolatingFunction", "[", 
+       RowBox[{"\[LeftSkeleton]", "5", "\[RightSkeleton]"}], "]"}],
+      False,
+      Editable->False], ",", 
+     TagBox[
+      RowBox[{"InterpolatingFunction", "[", 
+       RowBox[{"\[LeftSkeleton]", "5", "\[RightSkeleton]"}], "]"}],
+      False,
+      Editable->False], ",", 
+     TagBox[
+      RowBox[{"InterpolatingFunction", "[", 
+       RowBox[{"\[LeftSkeleton]", "5", "\[RightSkeleton]"}], "]"}],
+      False,
+      Editable->False], ",", 
+     RowBox[{"\[LeftSkeleton]", "71", "\[RightSkeleton]"}]}], "}"}]}], 
+  "}"}]], "Output",
+ CellChangeTimes->{3.5930326955373487`*^9}]
+}, Open  ]],
+
+Cell[TextData[{
+ "Conveniently plot the eigenspectrum using ",
+ StyleBox["PlotSpectrum",
+  FontFamily->"Courier"]
+}], "Text",
+ CellChangeTimes->{{3.593032732124743*^9, 3.593032762698902*^9}}],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"?", "PlotSpectrum"}]], "Input",
+ CellChangeTimes->{{3.5930328386649218`*^9, 3.5930328426413803`*^9}}],
+
+Cell[BoxData[
+ StyleBox["\<\"PlotSpectrum[\!\(\*\\nStyleBox[\\\"esystem\\\",\\nFontSlant->\\\
+\"Italic\\\"]\), {{\!\(\*\\nStyleBox[SubscriptBox[\\\"x\\\", \
+\\\"min\\\"],\\nFontSlant->\\\"Italic\\\"]\)\!\(\*\\nStyleBox[\\\",\\\",\\\
+nFontSlant->\\\"Italic\\\"]\)\!\(\*\\nStyleBox[SubscriptBox[\\\"x\\\", \
+\\\"max\\\"],\\nFontSlant->\\\"Italic\\\"]\)},{\!\(\*\\nStyleBox[SubscriptBox[\
+\\\"y\\\", \
+\\\"min\\\"],\\nFontSlant->\\\"Italic\\\"]\)\!\(\*\\nStyleBox[\\\",\\\",\\\
+nFontSlant->\\\"Italic\\\"]\)\!\(\*\\nStyleBox[SubscriptBox[\\\"y\\\", \
+\\\"max\\\"],\\nFontSlant->\\\"Italic\\\"]\)}}, Options]\\nPlots the \
+eigenvalue spectrum \
+\!\(\*\\nStyleBox[\\\"esystem\\\",\\nFontSlant->\\\"Italic\\\"]\)\!\(\*\\\
+nStyleBox[\\\" \\\",\\nFontSlant->\\\"Italic\\\"]\)(as output from \
+EigenNDSolve) over the region \\n(\!\(\*\\nStyleBox[SubscriptBox[\\\"x\\\", \
+\\\"min\\\"],\\nFontSlant->\\\"Italic\\\"]\)\!\(\*\\nStyleBox[\\\"\[Rule]\\\",\
+\\nFontSlant->\\\"Italic\\\"]\)\!\(\*\\nStyleBox[SubscriptBox[\\\"x\\\", \
+\\\"max\\\"],\\nFontSlant->\\\"Italic\\\"]\),\!\(\*\\nStyleBox[SubscriptBox[\\\
+\"y\\\", \\\"min\\\"],\\nFontSlant->\\\"Italic\\\"]\)\!\(\*\\nStyleBox[\\\"\
+\[Rule]\\\",\\nFontSlant->\\\"Italic\\\"]\)\!\(\*\\nStyleBox[SubscriptBox[\\\"\
+y\\\", \\\"max\\\"],\\nFontSlant->\\\"Italic\\\"]\)), where \
+\!\(\*\\nStyleBox[\\\"x\\\",\\nFontSlant->\\\"Italic\\\"]\)\!\(\*\\nStyleBox[\
+\\\" \\\",\\nFontSlant->\\\"Italic\\\"]\)and \
+\!\(\*\\nStyleBox[\\\"y\\\",\\nFontSlant->\\\"Italic\\\"]\)\!\(\*\\nStyleBox[\
+\\\" \\\",\\nFontSlant->\\\"Italic\\\"]\)refer to the real and imaginary axes \
+respectively.\\nClicking on eigenvalues will display the corresponding \
+eigenfunction in the inset and \\nwith mouseover the value of the eigenvalue \
+is displayed.\\n\\nOptions:\\ninsetSize\[Rule]0.5 - Size of the inset \
+eigenfunction plot in units of the full plot size.\\ninsetPosition->{0,0} - \
+Position of the lower LH corner of the inset plot in units scaled\\n\tto the \
+full plot size.\"\>", "MSG"]], "Print", "PrintUsage",
+ CellChangeTimes->{3.593036326997403*^9},
+ CellTags->"Info3593011126-9207221"]
+}, Open  ]],
+
+Cell[BoxData[{
+ RowBox[{"PlotSpectrum", "[", 
+  RowBox[{"esys", ",", 
+   RowBox[{"{", 
+    RowBox[{
+     RowBox[{"{", 
+      RowBox[{"0", ",", "20"}], "}"}], ",", 
+     RowBox[{"{", 
+      RowBox[{
+       RowBox[{"-", "0.8"}], ",", "0.6"}], "}"}]}], "}"}]}], 
+  "]"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"(*", 
+   RowBox[{
+   "Click", " ", "on", " ", "the", " ", "eigenvalues", " ", "to", " ", 
+    "display", " ", "the", " ", 
+    RowBox[{"eigenfunctions", "!"}]}], "*)"}]}]}], "Input",
+ CellChangeTimes->{{3.5930327704576283`*^9, 3.593032819763138*^9}, {
+  3.59317822056281*^9, 3.5931782347628603`*^9}}],
+
+Cell["\<\
+Any sort of homogeneous boundary conditions can be used\
+\>", "Text",
+ CellChangeTimes->{{3.593032882286915*^9, 3.5930329023089333`*^9}}],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"(*", 
+   RowBox[{"Neuman", " ", "BCs"}], "*)"}], "\[IndentingNewLine]", 
+  RowBox[{
+   RowBox[{
+    RowBox[{"esysN", "=", 
+     RowBox[{"EigenNDSolve", "[", 
+      RowBox[{
+       RowBox[{"{", 
+        RowBox[{
+         RowBox[{
+          RowBox[{
+           RowBox[{
+            RowBox[{"-", 
+             FractionBox["1", "2"]}], 
+            RowBox[{
+             RowBox[{"\[Xi]", "''"}], "[", "x", "]"}]}], "+", 
+           RowBox[{
+            FractionBox["1", "2"], 
+            SuperscriptBox["x", "2"], 
+            RowBox[{"\[Xi]", "[", "x", "]"}]}]}], "\[Equal]", 
+          RowBox[{"\[Omega]", " ", 
+           RowBox[{"\[Xi]", "[", "x", "]"}]}]}], ",", 
+         RowBox[{
+          RowBox[{
+           RowBox[{"\[Xi]", "'"}], "[", 
+           RowBox[{"-", "10"}], "]"}], "\[Equal]", "0"}], ",", 
+         RowBox[{
+          RowBox[{
+           RowBox[{"\[Xi]", "'"}], "[", "10", "]"}], "\[Equal]", "0"}]}], 
+        "}"}], ",", "\[Xi]", ",", 
+       RowBox[{"{", 
+        RowBox[{"x", ",", 
+         RowBox[{"-", "10"}], ",", "10"}], "}"}], ",", "\[Omega]"}], "]"}]}], 
+    ";"}], "\[IndentingNewLine]", 
+   RowBox[{"(*", 
+    RowBox[{"Periodic", " ", "BCs"}], "*)"}], "\[IndentingNewLine]", 
+   RowBox[{
+    RowBox[{"esysP", "=", 
+     RowBox[{"EigenNDSolve", "[", 
+      RowBox[{
+       RowBox[{"{", 
+        RowBox[{
+         RowBox[{
+          RowBox[{
+           RowBox[{
+            RowBox[{"-", 
+             FractionBox["1", "2"]}], 
+            RowBox[{
+             RowBox[{"\[Xi]", "''"}], "[", "x", "]"}]}], "+", 
+           RowBox[{
+            FractionBox["1", "2"], 
+            SuperscriptBox["x", "2"], 
+            RowBox[{"\[Xi]", "[", "x", "]"}]}]}], "\[Equal]", 
+          RowBox[{"\[Omega]", " ", 
+           RowBox[{"\[Xi]", "[", "x", "]"}]}]}], ",", 
+         RowBox[{
+          RowBox[{"\[Xi]", "[", 
+           RowBox[{"-", "10"}], "]"}], "\[Equal]", 
+          RowBox[{"\[Xi]", "[", "10", "]"}]}], ",", 
+         RowBox[{
+          RowBox[{
+           RowBox[{"\[Xi]", "'"}], "[", 
+           RowBox[{"-", "10"}], "]"}], "\[Equal]", 
+          RowBox[{
+           RowBox[{"\[Xi]", "'"}], "[", "10", "]"}]}]}], "}"}], ",", "\[Xi]", 
+       ",", 
+       RowBox[{"{", 
+        RowBox[{"x", ",", 
+         RowBox[{"-", "10"}], ",", "10"}], "}"}], ",", "\[Omega]"}], "]"}]}], 
+    ";"}]}]}]], "Input",
+ CellChangeTimes->{{3.5930329140319033`*^9, 3.593033009321822*^9}}],
+
+Cell["\<\
+There is only limited checking of the supplied boundary conditions (since \
+sometimes it is not obvious how many are needed) and output will be flawed if \
+problem is over/under-specified.\
+\>", "Text",
+ CellChangeTimes->{{3.593033015645158*^9, 3.593033080093363*^9}, {
+  3.5930331621120653`*^9, 3.593033178885948*^9}, {3.59303328576959*^9, 
+  3.5930333315945883`*^9}, {3.593036533555587*^9, 3.593036545485368*^9}}],
+
+Cell[BoxData[
+ RowBox[{"PlotSpectrum", "[", "\[IndentingNewLine]", 
+  RowBox[{
+   RowBox[{"EigenNDSolve", "[", 
+    RowBox[{
+     RowBox[{"{", 
+      RowBox[{
+       RowBox[{
+        RowBox[{
+         RowBox[{
+          RowBox[{"-", 
+           FractionBox["1", "2"]}], 
+          RowBox[{
+           RowBox[{"\[Xi]", "''"}], "[", "x", "]"}]}], "+", 
+         RowBox[{
+          FractionBox["1", "2"], 
+          SuperscriptBox["x", "2"], 
+          RowBox[{"\[Xi]", "[", "x", "]"}]}]}], "\[Equal]", 
+        RowBox[{"\[Omega]", " ", 
+         RowBox[{"\[Xi]", "[", "x", "]"}]}]}], ",", 
+       RowBox[{
+        RowBox[{"\[Xi]", "[", 
+         RowBox[{"-", "10"}], "]"}], "\[Equal]", "0"}]}], "}"}], ",", "\[Xi]",
+      ",", 
+     RowBox[{"{", 
+      RowBox[{"x", ",", 
+       RowBox[{"-", "10"}], ",", "10"}], "}"}], ",", "\[Omega]"}], "]"}], ",",
+    "\[IndentingNewLine]", 
+   RowBox[{"{", 
+    RowBox[{
+     RowBox[{"{", 
+      RowBox[{"0", ",", "20"}], "}"}], ",", 
+     RowBox[{"{", 
+      RowBox[{
+       RowBox[{"-", "0.8"}], ",", "0.6"}], "}"}]}], "}"}]}], "]"}]], "Input",
+ CellChangeTimes->{
+  3.5930332045265427`*^9, {3.593033235299564*^9, 3.593033263724165*^9}}]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell["\<\
+One dimensional fluid eigenproblems\
+\>", "Subsubsection",
+ CellChangeTimes->{{3.5930333656564093`*^9, 3.593033375119424*^9}}],
+
+Cell[TextData[{
+ "The Orr-Somerfeld equations arise from linearizing and Fourier analyzing a \
+Navier-Stokes equilibrium with background flow ",
+ Cell[BoxData[
+  FormBox[
+   RowBox[{"U", "(", "x", ")"}], TraditionalForm]],
+  FormatType->"TraditionalForm"],
+ ". \[Alpha] and \[Beta] are the ",
+ Cell[BoxData[
+  FormBox["y", TraditionalForm]],
+  FormatType->"TraditionalForm"],
+ " and ",
+ Cell[BoxData[
+  FormBox["z", TraditionalForm]],
+  FormatType->"TraditionalForm"],
+ " wavenumbers respectively."
+}], "Text",
+ CellChangeTimes->{{3.593033429186969*^9, 3.5930334919923487`*^9}, {
+  3.593033902598649*^9, 3.593033920966135*^9}, {3.593036596056201*^9, 
+  3.593036599788312*^9}}],
+
+Cell[BoxData[{
+ RowBox[{
+  RowBox[{"OrrSomer", "=", 
+   RowBox[{"{", 
+    RowBox[{
+     RowBox[{
+      RowBox[{
+       RowBox[{
+        FractionBox["1", "ReU"], 
+        RowBox[{"(", 
+         RowBox[{
+          RowBox[{
+           SuperscriptBox["\[Alpha]", "4"], " ", 
+           RowBox[{"u", "[", "x", "]"}]}], "+", 
+          RowBox[{"2", " ", 
+           SuperscriptBox["\[Alpha]", "2"], " ", 
+           SuperscriptBox["\[Beta]", "2"], " ", 
+           RowBox[{"u", "[", "x", "]"}]}], "+", 
+          RowBox[{
+           SuperscriptBox["\[Beta]", "4"], " ", 
+           RowBox[{"u", "[", "x", "]"}]}], "-", 
+          RowBox[{"2", " ", 
+           SuperscriptBox["\[Alpha]", "2"], " ", 
+           RowBox[{
+            SuperscriptBox["u", "\[Prime]\[Prime]",
+             MultilineFunction->None], "[", "x", "]"}]}], "-", 
+          RowBox[{"2", " ", 
+           SuperscriptBox["\[Beta]", "2"], " ", 
+           RowBox[{
+            SuperscriptBox["u", "\[Prime]\[Prime]",
+             MultilineFunction->None], "[", "x", "]"}]}], "+", 
+          RowBox[{
+           SuperscriptBox["u", 
+            TagBox[
+             RowBox[{"(", "4", ")"}],
+             Derivative],
+            MultilineFunction->None], "[", "x", "]"}]}], ")"}]}], "+", 
+       RowBox[{"\[ImaginaryI]", " ", 
+        SuperscriptBox["\[Alpha]", "3"], " ", 
+        RowBox[{"u", "[", "x", "]"}], " ", 
+        RowBox[{"U", "[", "x", "]"}]}], "+", 
+       RowBox[{"\[ImaginaryI]", " ", "\[Alpha]", " ", 
+        SuperscriptBox["\[Beta]", "2"], " ", 
+        RowBox[{"u", "[", "x", "]"}], " ", 
+        RowBox[{"U", "[", "x", "]"}]}], "+", 
+       RowBox[{"\[ImaginaryI]", " ", "\[Omega]", " ", 
+        RowBox[{"(", 
+         RowBox[{
+          RowBox[{
+           SuperscriptBox["u", "\[Prime]\[Prime]",
+            MultilineFunction->None], "[", "x", "]"}], "-", 
+          RowBox[{
+           SuperscriptBox["\[Alpha]", "2"], "  ", 
+           RowBox[{"u", "[", "x", "]"}]}], "-", " ", 
+          RowBox[{
+           SuperscriptBox["\[Beta]", "2"], " ", 
+           RowBox[{"u", "[", "x", "]"}]}]}], ")"}]}], "-", 
+       RowBox[{"\[ImaginaryI]", " ", "\[Alpha]", " ", 
+        RowBox[{"U", "[", "x", "]"}], " ", 
+        RowBox[{
+         SuperscriptBox["u", "\[Prime]\[Prime]",
+          MultilineFunction->None], "[", "x", "]"}]}], "+", 
+       RowBox[{"\[ImaginaryI]", " ", "\[Alpha]", " ", 
+        RowBox[{"u", "[", "x", "]"}], " ", 
+        RowBox[{
+         SuperscriptBox["U", "\[Prime]\[Prime]",
+          MultilineFunction->None], "[", "x", "]"}]}]}], "\[Equal]", "0"}], 
+     ",", 
+     RowBox[{
+      RowBox[{
+       RowBox[{
+        FractionBox["1", "ReU"], 
+        RowBox[{"(", 
+         RowBox[{
+          RowBox[{
+           SuperscriptBox["\[Zeta]", "\[Prime]\[Prime]",
+            MultilineFunction->None], "[", "x", "]"}], "-", 
+          RowBox[{
+           SuperscriptBox["\[Alpha]", "2"], " ", 
+           RowBox[{"\[Zeta]", "[", "x", "]"}]}], "-", 
+          RowBox[{
+           SuperscriptBox["\[Beta]", "2"], " ", 
+           RowBox[{"\[Zeta]", "[", "x", "]"}]}]}], ")"}]}], "+", 
+       RowBox[{"\[ImaginaryI]", " ", "\[Omega]", " ", 
+        RowBox[{"\[Zeta]", "[", "x", "]"}]}], "-", 
+       RowBox[{"\[ImaginaryI]", " ", "\[Alpha]", " ", 
+        RowBox[{"U", "[", "x", "]"}], " ", 
+        RowBox[{"\[Zeta]", "[", "x", "]"}]}], "-", 
+       RowBox[{"\[ImaginaryI]", " ", "\[Beta]", " ", 
+        RowBox[{"u", "[", "x", "]"}], " ", 
+        RowBox[{
+         SuperscriptBox["U", "\[Prime]",
+          MultilineFunction->None], "[", "x", "]"}]}]}], "\[Equal]", "0"}]}], 
+    "}"}]}], ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"BCs", "=", 
+   RowBox[{"{", 
+    RowBox[{
+     RowBox[{
+      RowBox[{"u", "[", 
+       RowBox[{"-", "1"}], "]"}], "\[Equal]", "0"}], ",", 
+     RowBox[{
+      RowBox[{"u", "[", "1", "]"}], "\[Equal]", "0"}], ",", 
+     RowBox[{
+      RowBox[{
+       RowBox[{"u", "'"}], "[", 
+       RowBox[{"-", "1"}], "]"}], "\[Equal]", "0"}], ",", 
+     RowBox[{
+      RowBox[{
+       RowBox[{"u", "'"}], "[", "1", "]"}], "\[Equal]", "0"}], ",", 
+     RowBox[{
+      RowBox[{"\[Zeta]", "[", 
+       RowBox[{"-", "1"}], "]"}], "\[Equal]", "0"}], ",", 
+     RowBox[{
+      RowBox[{"\[Zeta]", "[", "1", "]"}], "\[Equal]", "0"}]}], "}"}]}], 
+  ";"}]}], "Input",
+ CellChangeTimes->{{3.593028970443151*^9, 3.593028981748157*^9}, {
+  3.593031869954405*^9, 3.5930319885151978`*^9}, {3.5930334946116467`*^9, 
+  3.59303349985218*^9}, {3.593033639496831*^9, 3.593033675160245*^9}}],
+
+Cell[TextData[{
+ "Pouiseille flow ",
+ Cell[BoxData[
+  FormBox[
+   RowBox[{
+    RowBox[{"U", "(", "x", ")"}], "=", 
+    RowBox[{"1", "-", 
+     SuperscriptBox["x", "2"], " "}]}], TraditionalForm]],
+  FormatType->"TraditionalForm"],
+ "is stable at low Reynolds number but becomes unstable above \
+Re\[TildeTilde]6000"
+}], "Text",
+ CellChangeTimes->{{3.593033527640765*^9, 3.593033623893854*^9}, 
+   3.593036617379655*^9}],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[{
+ RowBox[{
+  RowBox[{"PouiseilleEqns", "=", 
+   RowBox[{
+    RowBox[{
+     RowBox[{"Join", "[", 
+      RowBox[{"OrrSomer", ",", "BCs"}], "]"}], "/.", 
+     RowBox[{"{", 
+      RowBox[{"U", "\[Rule]", 
+       RowBox[{"(", 
+        RowBox[{"x", "\[Function]", 
+         RowBox[{"1", "-", 
+          SuperscriptBox["x", "2"]}]}], ")"}]}], "}"}]}], "/.", 
+    RowBox[{"{", 
+     RowBox[{
+      RowBox[{"\[Alpha]", "\[Rule]", "1"}], ",", 
+      RowBox[{"\[Beta]", "\[Rule]", "0"}]}], "}"}]}]}], 
+  ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"esysLR", "=", 
+   RowBox[{"EigenNDSolve", "[", 
+    RowBox[{
+     RowBox[{"PouiseilleEqns", "/.", 
+      RowBox[{"ReU", "\[Rule]", "1000"}]}], ",", 
+     RowBox[{"{", 
+      RowBox[{"u", ",", "\[Zeta]"}], "}"}], ",", 
+     RowBox[{"{", 
+      RowBox[{"x", ",", 
+       RowBox[{"-", "1"}], ",", "1"}], "}"}], ",", "\[Omega]"}], "]"}]}], 
+  ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"esysHR", "=", 
+   RowBox[{"EigenNDSolve", "[", 
+    RowBox[{
+     RowBox[{"PouiseilleEqns", "/.", 
+      RowBox[{"ReU", "\[Rule]", "6000"}]}], ",", 
+     RowBox[{"{", 
+      RowBox[{"u", ",", "\[Zeta]"}], "}"}], ",", 
+     RowBox[{"{", 
+      RowBox[{"x", ",", 
+       RowBox[{"-", "1"}], ",", "1"}], "}"}], ",", "\[Omega]"}], "]"}]}], 
+  ";"}], "\[IndentingNewLine]", 
+ RowBox[{"PlotSpectrum", "[", 
+  RowBox[{"esysLR", ",", 
+   RowBox[{"{", 
+    RowBox[{
+     RowBox[{"{", 
+      RowBox[{"0", ",", "1"}], "}"}], ",", 
+     RowBox[{"{", 
+      RowBox[{
+       RowBox[{"-", "1"}], ",", "0.1"}], "}"}]}], "}"}]}], 
+  "]"}], "\[IndentingNewLine]", 
+ RowBox[{"PlotSpectrum", "[", 
+  RowBox[{"esysHR", ",", 
+   RowBox[{"{", 
+    RowBox[{
+     RowBox[{"{", 
+      RowBox[{"0", ",", "1"}], "}"}], ",", 
+     RowBox[{"{", 
+      RowBox[{
+       RowBox[{"-", "1"}], ",", "0.1"}], "}"}]}], "}"}]}], "]"}]}], "Input",
+ CellChangeTimes->{{3.593033681701043*^9, 3.593033782968212*^9}, {
+   3.593033826411748*^9, 3.593033899593947*^9}, {3.593033932686075*^9, 
+   3.593033982153513*^9}, 3.593036627182413*^9}],
+
+Cell[BoxData[
+ RowBox[{"{", 
+  RowBox[{
+   RowBox[{
+    RowBox[{
+     RowBox[{
+      RowBox[{"-", "2"}], " ", "\[ImaginaryI]", " ", 
+      RowBox[{"u", "[", "x", "]"}]}], "+", 
+     RowBox[{"\[ImaginaryI]", " ", 
+      RowBox[{"(", 
+       RowBox[{"1", "-", 
+        SuperscriptBox["x", "2"]}], ")"}], " ", 
+      RowBox[{"u", "[", "x", "]"}]}], "-", 
+     RowBox[{"\[ImaginaryI]", " ", 
+      RowBox[{"(", 
+       RowBox[{"1", "-", 
+        SuperscriptBox["x", "2"]}], ")"}], " ", 
+      RowBox[{
+       SuperscriptBox["u", "\[Prime]\[Prime]",
+        MultilineFunction->None], "[", "x", "]"}]}], "+", 
+     RowBox[{"\[ImaginaryI]", " ", "\[Omega]", " ", 
+      RowBox[{"(", 
+       RowBox[{
+        RowBox[{"-", 
+         RowBox[{"u", "[", "x", "]"}]}], "+", 
+        RowBox[{
+         SuperscriptBox["u", "\[Prime]\[Prime]",
+          MultilineFunction->None], "[", "x", "]"}]}], ")"}]}], "+", 
+     FractionBox[
+      RowBox[{
+       RowBox[{"u", "[", "x", "]"}], "-", 
+       RowBox[{"2", " ", 
+        RowBox[{
+         SuperscriptBox["u", "\[Prime]\[Prime]",
+          MultilineFunction->None], "[", "x", "]"}]}], "+", 
+       RowBox[{
+        SuperscriptBox["u", 
+         TagBox[
+          RowBox[{"(", "4", ")"}],
+          Derivative],
+         MultilineFunction->None], "[", "x", "]"}]}], "ReU"]}], "\[Equal]", 
+    "0"}], ",", 
+   RowBox[{
+    RowBox[{
+     RowBox[{
+      RowBox[{"-", "\[ImaginaryI]"}], " ", 
+      RowBox[{"(", 
+       RowBox[{"1", "-", 
+        SuperscriptBox["x", "2"]}], ")"}], " ", 
+      RowBox[{"\[Zeta]", "[", "x", "]"}]}], "+", 
+     RowBox[{"\[ImaginaryI]", " ", "\[Omega]", " ", 
+      RowBox[{"\[Zeta]", "[", "x", "]"}]}], "+", 
+     FractionBox[
+      RowBox[{
+       RowBox[{"-", 
+        RowBox[{"\[Zeta]", "[", "x", "]"}]}], "+", 
+       RowBox[{
+        SuperscriptBox["\[Zeta]", "\[Prime]\[Prime]",
+         MultilineFunction->None], "[", "x", "]"}]}], "ReU"]}], "\[Equal]", 
+    "0"}], ",", 
+   RowBox[{
+    RowBox[{"u", "[", 
+     RowBox[{"-", "1"}], "]"}], "\[Equal]", "0"}], ",", 
+   RowBox[{
+    RowBox[{"u", "[", "1", "]"}], "\[Equal]", "0"}], ",", 
+   RowBox[{
+    RowBox[{
+     SuperscriptBox["u", "\[Prime]",
+      MultilineFunction->None], "[", 
+     RowBox[{"-", "1"}], "]"}], "\[Equal]", "0"}], ",", 
+   RowBox[{
+    RowBox[{
+     SuperscriptBox["u", "\[Prime]",
+      MultilineFunction->None], "[", "1", "]"}], "\[Equal]", "0"}], ",", 
+   RowBox[{
+    RowBox[{"\[Zeta]", "[", 
+     RowBox[{"-", "1"}], "]"}], "\[Equal]", "0"}], ",", 
+   RowBox[{
+    RowBox[{"\[Zeta]", "[", "1", "]"}], "\[Equal]", "0"}]}], "}"}]], "Output",\
+
+ CellChangeTimes->{{3.593033783838785*^9, 3.593033812345613*^9}, 
+   3.5930339490380783`*^9, 3.593033982663101*^9, {3.593034973150161*^9, 
+   3.5930349965931387`*^9}, 3.593035054210238*^9, 3.593035087964039*^9}]
+}, Open  ]],
+
+Cell[TextData[{
+ "There are a couple of numerical effects to watch out for that are \
+observable in the above figures. \nThe first is the spurious eigenvalues, the \
+first and second eigenvalues in both ",
+ StyleBox["esysLR",
+  FontFamily->"Courier"],
+ " and ",
+ StyleBox["esysLR",
+  FontFamily->"Courier"],
+ " are very large and not physical.\nThe second is the splitting of the lower \
+eigenvalue branch in the high Reynolds number case. This can be improved by \
+using more polynomials."
+}], "Text",
+ CellChangeTimes->{{3.593035131586295*^9, 3.593035341861142*^9}, {
+  3.593036645518731*^9, 3.593036680480393*^9}}],
+
+Cell[BoxData[{
+ RowBox[{
+  RowBox[{"esysHR", "=", 
+   RowBox[{"EigenNDSolve", "[", 
+    RowBox[{
+     RowBox[{"PouiseilleEqns", "/.", 
+      RowBox[{"ReU", "\[Rule]", "6000"}]}], ",", 
+     RowBox[{"{", 
+      RowBox[{"u", ",", "\[Zeta]"}], "}"}], ",", 
+     RowBox[{"{", 
+      RowBox[{"x", ",", 
+       RowBox[{"-", "1"}], ",", "1"}], "}"}], ",", "\[Omega]", ",", 
+     RowBox[{"Npoly", "\[Rule]", "130"}]}], "]"}]}], 
+  ";"}], "\[IndentingNewLine]", 
+ RowBox[{"PlotSpectrum", "[", 
+  RowBox[{"esysHR", ",", 
+   RowBox[{"{", 
+    RowBox[{
+     RowBox[{"{", 
+      RowBox[{"0", ",", "1"}], "}"}], ",", 
+     RowBox[{"{", 
+      RowBox[{
+       RowBox[{"-", "1"}], ",", "0.1"}], "}"}]}], "}"}]}], "]"}]}], "Input",
+ CellChangeTimes->{{3.5930353669982567`*^9, 3.593035416116108*^9}}],
+
+Cell[TextData[{
+ "Note that it is sometimes necessary to use higher than numerical precision \
+to obtain satisfactory results (",
+ StyleBox["e.g.,",
+  FontSlant->"Italic"],
+ StyleBox[" precision\[Rule]30",
+  FontFamily->"Courier"],
+ "). This can be very slow!\nMore information on these methods and numerical \
+challenges can be found in Dongarra et al. \[OpenCurlyDoubleQuote]Chebyshev \
+tau QZ Algorithm Methods for Calculating Spectra of Hydrodynamic Stability \
+Problems,\[CloseCurlyDoubleQuote] 1997."
+}], "Text",
+ CellChangeTimes->{{3.5930354189630527`*^9, 3.593035572182157*^9}}],
+
+Cell[TextData[{
+ "The method used to construct operator matrices can be fairly slow for very \
+complicated differential equations. If you find this to be a problem, setting \
+",
+ StyleBox["useParallel\[Rule]True",
+  FontFamily->"Courier"],
+ " can speed this up substantially. Note that the native ",
+ StyleBox["Mathematica",
+  FontSlant->"Italic"],
+ " function ",
+ StyleBox["Eigensystem",
+  FontFamily->"Courier"],
+ " is already parallelized for numerical precision calculations and in most \
+cases this step is the most computationally intensive. "
+}], "Text",
+ CellChangeTimes->{{3.593035723943972*^9, 3.593035798914681*^9}, {
+  3.593035994342992*^9, 3.593036068765463*^9}, {3.593036705982683*^9, 
+  3.593036707958763*^9}}]
+}, Open  ]]
+},
+WindowSize->{740, 752},
+WindowMargins->{{12, Automatic}, {Automatic, 24}},
+ShowSelection->True,
+FrontEndVersion->"9.0 for Mac OS X x86 (32-bit, 64-bit Kernel) (January 25, \
+2013)",
+StyleDefinitions->"Default.nb"
+]
+(* End of Notebook Content *)
+
+(* Internal cache information *)
+(*CellTagsOutline
+CellTagsIndex->{
+ "Info3593011096-9207221"->{
+  Cell[2530, 75, 3746, 55, 426, "Print",
+   CellTags->"Info3593011096-9207221"]},
+ "Info3593011126-9207221"->{
+  Cell[11264, 297, 2115, 31, 198, "Print",
+   CellTags->"Info3593011126-9207221"]}
+ }
+*)
+(*CellTagsIndex
+CellTagsIndex->{
+ {"Info3593011096-9207221", 31948, 880},
+ {"Info3593011126-9207221", 32059, 883}
+ }
+*)
+(*NotebookFileOutline
+Notebook[{
+Cell[557, 20, 97, 1, 30, "Text"],
+Cell[657, 23, 577, 8, 28, "Input"],
+Cell[1237, 33, 160, 3, 30, "Text"],
+Cell[1400, 38, 550, 13, 63, "Input"],
+Cell[CellGroupData[{
+Cell[1975, 55, 111, 1, 35, "Subsubsection"],
+Cell[2089, 58, 292, 9, 31, "Text"],
+Cell[CellGroupData[{
+Cell[2406, 71, 121, 2, 28, "Input"],
+Cell[2530, 75, 3746, 55, 426, "Print",
+ CellTags->"Info3593011096-9207221"]
+}, Open  ]],
+Cell[6291, 133, 175, 4, 30, "Text"],
+Cell[6469, 139, 984, 30, 78, "Input"],
+Cell[7456, 171, 785, 31, 32, "Text"],
+Cell[CellGroupData[{
+Cell[8266, 206, 335, 8, 46, "Input"],
+Cell[8604, 216, 2301, 65, 114, "Output"]
+}, Open  ]],
+Cell[10920, 284, 191, 5, 31, "Text"],
+Cell[CellGroupData[{
+Cell[11136, 293, 125, 2, 28, "Input"],
+Cell[11264, 297, 2115, 31, 198, "Print",
+ CellTags->"Info3593011126-9207221"]
+}, Open  ]],
+Cell[13394, 331, 614, 18, 46, "Input"],
+Cell[14011, 351, 147, 3, 30, "Text"],
+Cell[14161, 356, 2438, 72, 177, "Input"],
+Cell[16602, 430, 425, 7, 49, "Text"],
+Cell[17030, 439, 1175, 36, 105, "Input"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[18242, 480, 136, 3, 35, "Subsubsection"],
+Cell[18381, 485, 676, 19, 51, "Text"],
+Cell[19060, 506, 4502, 118, 164, "Input"],
+Cell[23565, 626, 419, 13, 32, "Text"],
+Cell[CellGroupData[{
+Cell[24009, 643, 2045, 63, 104, "Input"],
+Cell[26057, 708, 2800, 82, 108, "Output"]
+}, Open  ]],
+Cell[28872, 793, 617, 14, 107, "Text"],
+Cell[29492, 809, 782, 23, 63, "Input"],
+Cell[30277, 834, 586, 12, 107, "Text"],
+Cell[30866, 848, 725, 17, 89, "Text"]
+}, Open  ]]
+}
+]
+*)
+
+(* End of internal cache information *)
